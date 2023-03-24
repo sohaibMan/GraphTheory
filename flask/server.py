@@ -24,6 +24,7 @@ def createGraph():
     if (content_type != 'application/json'):
         return 'Content-Type not supported!'
     else:
+        plt.clf()
         body = request.get_json()
         G = nx.Graph()
         # add a node
@@ -38,7 +39,9 @@ def createGraph():
             "status": "success",
             "message": "Graph created successfully",
             "graphId": filename,
-            "graphUrl": "http://localhost:9091/api/graph?graphId=" + filename
+            "graphUrl": "http://localhost:9091/api/graph?graphId=" + filename,
+            "nodes": body['nodes'],
+            "edges": body['edges']
 
         }
 
