@@ -1,0 +1,5 @@
+pymongo
+flask
+flask_cors
+networkx
+matplotlib

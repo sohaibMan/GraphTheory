@@ -1,38 +1,78 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Compose sample application
 
-## Getting Started
+### Use with Docker Development Environments
 
-First, run the development server:
+You can open this sample in the Dev Environments feature of Docker Desktop version 4.12 or later.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+[Open in Docker Dev Environments <img src="../open_in_new.svg" alt="Open in Docker Dev Environments" align="top"/>](https://open.docker.com/dashboard/dev-envs?url=https://github.com/docker/awesome-compose/tree/master/nginx-flask-mongo)
+
+### Python/Flask application with Nginx proxy and a Mongo database
+
+Project structure:
+```
+.
+├── compose.yaml
+├── flask
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── server.py
+└── nginx
+    └── nginx.conf
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[_compose.yaml_](compose.yaml)
+```
+services:
+  web:
+    build: app
+    ports:
+    - 80:80
+  backend:
+    build: flask
+    ...
+  mongo:
+    image: mongo
+```
+The compose file defines an application with three services `web`, `backend` and `db`.
+When deploying the application, docker compose maps port 80 of the web service container to port 80 of the host as specified in the file.
+Make sure port 80 on the host is not being used by another container, otherwise the port should be changed.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Deploy with docker compose
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```
+$ docker compose up -d
+Creating network "nginx-flask-mongo_default" with the default driver
+Pulling mongo (mongo:)...
+latest: Pulling from library/mongo
+423ae2b273f4: Pull complete
+...
+...
+Status: Downloaded newer image for nginx:latest
+Creating nginx-flask-mongo_mongo_1 ... done
+Creating nginx-flask-mongo_backend_1 ... done
+Creating nginx-flask-mongo_web_1     ... done
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Expected result
 
-## Learn More
+Listing containers must show three containers running and the port mapping as below:
+```
+$ docker ps
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS              PORTS                  NAMES
+a0f4ebe686ff        nginx                       "/bin/bash -c 'envsu…"   About a minute ago   Up About a minute   0.0.0.0:80->80/tcp     nginx-flask-mongo_web_1
+dba87a080821        nginx-flask-mongo_backend   "./server.py"            About a minute ago   Up About a minute                          nginx-flask-mongo_backend_1
+d7eea5481c77        mongo                       "docker-entrypoint.s…"   About a minute ago   Up About a minute   27017/tcp              nginx-flask-mongo_mongo_1
+```
 
-To learn more about Next.js, take a look at the following resources:
+After the application starts, navigate to `http://localhost:80` in your web browser or run:
+```
+$ curl localhost:80
+Hello from the MongoDB client!
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Stop and remove the containers
+```
+$ docker compose down
+```

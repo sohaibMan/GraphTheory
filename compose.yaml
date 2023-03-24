@@ -1,0 +1,36 @@
+services:
+ 
+  flask:
+    build:
+      context: flask
+      target: builder
+    # flask requires SIGINT to stop gracefully
+    # (default stop signal from Compose is SIGTERM)
+    stop_signal: SIGINT
+    environment:
+      - FLASK_SERVER_PORT=9091
+    # command: sh <(curl -q https://platform.activestate.com/dl/cli/_pdli01/install.sh) -c'state activate --default Pizza-Team/Graph-Theory'
+    volumes:
+      - ./flask:/src
+    # depends_on:
+    #   -  mongo  
+    ports:
+      - 9091:9091
+    restart: always
+
+  # mongo:
+  #   image: mongo
+  #   depends_on:
+  #     -  nextjs
+  #   restart: always
+
+  nextjs:
+    image: next
+    build: ./nextjs
+    volumes:
+      - ./nextjs:/app
+    ports:
+      - 3000:3000
+    restart: always
+  
+
