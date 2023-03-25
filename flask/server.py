@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 from random import randint
+import shutil
 import uuid
-import networkx as nx
 from matplotlib import pyplot as plt
 import os
+import networkx as nx
 
 
 from flask import Flask, request, send_file
 from flask_cors import CORS
+
+from createGraph import createUndirectedGraph, createDirectedGraph
 app = Flask(__name__)
 
 
@@ -25,11 +28,20 @@ def createGraph():
         return 'Content-Type not supported!'
     else:
         plt.clf()
+        if os.path.exists("./graphs"):
+            shutil.rmtree("./graphs")
+        os.mkdir("./graphs")
         body = request.get_json()
-        G = nx.Graph()
-        # add a node
-        G.add_nodes_from(body['nodes'])
-        G.add_edges_from(body['edges'])
+        graphType = request.args.get("graphType")
+        print(graphType)
+
+        if graphType == "undirected":
+            G = createUndirectedGraph(body['nodes'], body['edges'])
+        elif graphType == "directed":
+            G = createDirectedGraph(body['nodes'], body['edges'])
+        else:
+            G = nx.Graph()
+
         filename = str(uuid.uuid4())
         G.name = filename
 

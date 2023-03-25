@@ -1,12 +1,14 @@
 import styles from "../styles/Home.module.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import Image from "next/image";
 import TextAreaWithLineNumber from "@/pages/components/textAreaWithLineNumber";
 import { useQuery } from "react-query";
+import Button from "./components/Button";
 
 export default function Home() {
   let nodes = useRef(new Set<String>());
   let edges = useRef(new Set<[String, String]>());
+  let graphType = useRef("");
 
   console.log("🚀 ~ file: index.tsx:21 ~ useEffect ~ nodes:", nodes);
 
@@ -46,13 +48,19 @@ export default function Home() {
     isSuccess,
     refetch,
   } = useQuery("graph", () =>
-    fetch("http://localhost:9091/api/graph", requestOptions)
+    fetch(
+      `http://localhost:9091/api/graph?graphType=${
+        graphType.current || "directed"
+      }`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result: { graphUrl: string }) => {
         console.log(result.graphUrl);
         return result.graphUrl;
       })
   );
+
   // useEffect(() => {
   //   ["1", "2", "3", "4", "5"].forEach((node) => nodes.current.add(node));
   //   [
@@ -86,6 +94,7 @@ export default function Home() {
     //  lines.for
     // lines[0].split(" ")
   };
+
   return (
     <div className={styles.container}>
       <div>
@@ -94,6 +103,24 @@ export default function Home() {
           onChange={changeHandler}
           placeholder={"1 2\n1 3\n2 4\n2 5"}
         />
+        <div className={styles.controlButtons}>
+          <Button
+            onClick={function () {
+              graphType.current = "directed";
+              refetch();
+            }}
+            isDisabled={graphType.current === "directed" ? true : false}
+            message="Directed"
+          />
+          <Button
+            onClick={function () {
+              graphType.current = "undirected";
+              refetch();
+            }}
+            isDisabled={graphType.current === "undirected" ? true : false}
+            message="Undirected"
+          />
+        </div>
       </div>
       <div>
         <div
