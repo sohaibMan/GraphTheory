@@ -7,7 +7,7 @@ import Button from "./components/Button";
 
 export default function Home() {
   let nodes = useRef(new Set<String>());
-  let edges = useRef(new Set<[String, String]>());
+  let edges = useRef(new Set<[String, String, String?]>());
   let graphType = useRef("");
 
   console.log("🚀 ~ file: index.tsx:21 ~ useEffect ~ nodes:", nodes);
@@ -20,7 +20,7 @@ export default function Home() {
       ? {
           nodes: ["1", "2", "3", "4", "5"],
           edges: [
-            ["1", "2"],
+            ["1", "2", "3"],
             ["1", "3"],
             ["2", "4"],
             ["2", "5"],
@@ -79,13 +79,33 @@ export default function Home() {
     const input = e.target.value;
     const lines = input.split("\n");
     const NewNodes = new Set<String>();
-    const NewEdges = new Set<[String, String]>();
+    const NewEdges = new Set<[String, String, String?]>();
     lines.forEach((line) => {
-      line.split(" ")[0] &&
-        NewNodes.add(line.split(" ")[0]) &&
-        line.split(" ")[1] &&
-        NewEdges.add([line.split(" ")[0], line.split(" ")[1]]);
+      line.split(" ")[0] && NewNodes.add(line.split(" ")[0]);
+      console.log(line.split(" ")[1]);
+      console.log(line.split(" "));
+      if (line.split(" ")[1]) {
+        line.split(" ")[2]
+          ? NewEdges.add([
+              line.split(" ")[0],
+              line.split(" ")[1],
+              line.split(" ")[2],
+            ])
+          : NewEdges.add([line.split(" ")[0], line.split(" ")[1]]);
+      }
+      // line.split(" ")[1] &&
+      // line.split(" ")[2] === ""
+      //   : NewEdges.add([
+      //       line.split(" ")[0],
+      //       line.split(" ")[1],
+      //       line.split(" ")[3],
+      // ]);
     });
+    console.log(
+      "🚀 ~ file: index.tsx:50 ~ changeHandler ~ NewNodes:",
+      NewNodes
+    );
+
     nodes.current = NewNodes;
     edges.current = NewEdges;
 
@@ -101,7 +121,7 @@ export default function Home() {
         <p> Add your nodes and edges here:</p>
         <TextAreaWithLineNumber
           onChange={changeHandler}
-          placeholder={"1 2\n1 3\n2 4\n2 5"}
+          placeholder={"1 2 3\n1 3\n2 4\n2 5"}
         />
         <div className={styles.controlButtons}>
           <Button
@@ -119,6 +139,13 @@ export default function Home() {
             }}
             isDisabled={graphType.current === "undirected" ? true : false}
             message="Undirected"
+          />
+          <Button
+            onClick={function () {
+              refetch();
+            }}
+            isDisabled={false}
+            message="Redraw"
           />
         </div>
       </div>

@@ -33,7 +33,7 @@ def createGraph():
         os.mkdir("./graphs")
         body = request.get_json()
         graphType = request.args.get("graphType")
-        print(graphType)
+        # print(graphType)
 
         if graphType == "undirected":
             G = createUndirectedGraph(body['nodes'], body['edges'])
@@ -45,7 +45,8 @@ def createGraph():
         filename = str(uuid.uuid4())
         G.name = filename
 
-        nx.draw(G, with_labels=filename)
+        nx.draw(G, with_labels=True, node_size=1000, node_color='#e67e22',
+                edge_color='#d35400', arrowsize=35, font_size=18)
         plt.savefig("./graphs/" + filename + ".png")
         return {
             "status": "success",
