@@ -1,0 +1,38 @@
+.input-group {
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  min-height: 50px;
+  /* max-width: 150px; */
+  width: 100%;
+  padding: 0 1rem;
+  color: inherit;
+  font-size: 15px;
+  border: 1px solid #e67e22;
+  border-radius: 6px 0 0 6px;
+  background-color: transparent;
+}
+
+.button--submit {
+  min-height: 50px;
+  padding: 0.5em 1em;
+  border: none;
+  border-radius: 0 6px 6px 0;
+  background-color: #e67e22;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.button--submit:hover {
+  background-color: #f39c12;
+}
+
+.input:focus,
+.input:focus-visible {
+  border-color: #f39c12;
+  outline: none;
+}

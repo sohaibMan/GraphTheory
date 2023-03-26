@@ -42,6 +42,7 @@ def createGraph():
         else:
             G = nx.Graph()
 
+        print(G.adjacency())
         filename = str(uuid.uuid4())
         G.name = filename
 

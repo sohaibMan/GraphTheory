@@ -1,16 +1,18 @@
 import styles from "../styles/Home.module.css";
-import { useCallback, useMemo, useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import TextAreaWithLineNumber from "@/pages/components/textAreaWithLineNumber";
 import { useQuery } from "react-query";
 import Button from "./components/Button";
+import Input from "./components/Input";
+import ButtonDownload from "./components/ButtonDownload";
 
 export default function Home() {
   let nodes = useRef(new Set<String>());
   let edges = useRef(new Set<[String, String, String?]>());
   let graphType = useRef("");
 
-  console.log("🚀 ~ file: index.tsx:21 ~ useEffect ~ nodes:", nodes);
+  // console.log("🚀 ~ file: index.tsx:21 ~ useEffect ~ nodes:", nodes);
 
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -33,8 +35,15 @@ export default function Home() {
   );
   console.log("🚀 ~ file: index.tsx:29 ~ Home ~ raw:", raw);
 
-  // console.log("🚀 ~ file: index.tsx:21 ~ useEffect ~ raw:", raw);
+  const [algo, setAlgo] = useState<String>("");
+  // todo
+  // const { data: AlgoResultImageLink } = useQuery(
+  //   "algoResult",
+  //   fetch(
 
+  //   )
+  // );
+  // todo
   let requestOptions: RequestInit = {
     method: "POST",
     headers: myHeaders,
@@ -61,16 +70,6 @@ export default function Home() {
       })
   );
 
-  // useEffect(() => {
-  //   ["1", "2", "3", "4", "5"].forEach((node) => nodes.current.add(node));
-  //   [
-  //     ["1", "2"],
-  //     ["1", "3"],
-  //     ["2", "4"],
-  //     ["2", "5"],
-  //   ].forEach((edge) => edges.current.add([edge[0], edge[1]]));
-  //   refetch();
-  // }, []);
   const myLoader = ({ src }: { src: String }) => {
     return `${src}`;
   };
@@ -93,28 +92,16 @@ export default function Home() {
             ])
           : NewEdges.add([line.split(" ")[0], line.split(" ")[1]]);
       }
-      // line.split(" ")[1] &&
-      // line.split(" ")[2] === ""
-      //   : NewEdges.add([
-      //       line.split(" ")[0],
-      //       line.split(" ")[1],
-      //       line.split(" ")[3],
-      // ]);
     });
-    console.log(
-      "🚀 ~ file: index.tsx:50 ~ changeHandler ~ NewNodes:",
-      NewNodes
-    );
 
     nodes.current = NewNodes;
     edges.current = NewEdges;
 
     await refetch();
-    // console.log("🚀 ~ file: index.tsx:50 ~ changeHandler ~ nodes:", nodes);
-    //  lines.for
-    // lines[0].split(" ")
   };
-
+  const submitHandler = (algo: String) => {
+    setAlgo(algo);
+  };
   return (
     <div className={styles.container}>
       <div>
@@ -140,6 +127,7 @@ export default function Home() {
             isDisabled={graphType.current === "undirected" ? true : false}
             message="Undirected"
           />
+          {imgLink && <ButtonDownload link={imgLink} message="Download" />}
           <Button
             onClick={function () {
               refetch();
@@ -148,12 +136,26 @@ export default function Home() {
             message="Redraw"
           />
         </div>
+        <div className={styles.controlButtons}>
+          <Input
+            onSubmit={submitHandler}
+            message="BFS"
+            placeHolder="Enter The  Starting Node"
+          />
+          <Input
+            onSubmit={submitHandler}
+            message="DFS"
+            placeHolder="Enter The  Starting Node"
+          />
+        </div>
       </div>
       <div>
         <div
           className={styles.graph}
           style={{ height: "500px", width: "500px" }}
         >
+          <p> Input Graph:</p>
+
           {isSuccess ? (
             <Image
               loader={myLoader}
