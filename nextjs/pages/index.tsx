@@ -7,10 +7,12 @@ import Button from "./components/Button";
 import Input from "./components/Input";
 import ButtonDownload from "./components/ButtonDownload";
 
-export default function Home() {
+export default function Home(this: any) {
   let nodes = useRef(new Set<String>());
   let edges = useRef(new Set<[String, String, String?]>());
   let graphType = useRef("");
+  let algo = useRef("");
+  let startingNode = useRef("");
 
   // console.log("🚀 ~ file: index.tsx:21 ~ useEffect ~ nodes:", nodes);
 
@@ -33,17 +35,11 @@ export default function Home() {
           edges: Array.from(edges.current),
         }
   );
-  console.log("🚀 ~ file: index.tsx:29 ~ Home ~ raw:", raw);
+  // console.log("🚀 ~ file: index.tsx:29 ~ Home ~ raw:", raw);
 
-  const [algo, setAlgo] = useState<String>("");
+  // const [algo, setAlgo] = useState<String>("");
   // todo
-  // const { data: AlgoResultImageLink } = useQuery(
-  //   "algoResult",
-  //   fetch(
 
-  //   )
-  // );
-  // todo
   let requestOptions: RequestInit = {
     method: "POST",
     headers: myHeaders,
@@ -65,9 +61,42 @@ export default function Home() {
     )
       .then((response) => response.json())
       .then((result: { graphUrl: string }) => {
-        console.log(result.graphUrl);
+        // console.log(result.graphUrl);
         return result.graphUrl;
       })
+  );
+
+  var rawAlgo = JSON.stringify({
+    nodes: ["1", "2", "3", "4", "5"],
+    edges: [
+      ["1", "2"],
+      ["1", "3"],
+      ["2", "4"],
+      ["2", "5"],
+    ],
+    start: startingNode.current || "2",
+  });
+
+  var requestOptionsAlgo: RequestInit = {
+    method: "POST",
+    headers: myHeaders,
+    body: rawAlgo,
+    redirect: "follow",
+  };
+
+  const {
+    data: AlgoResultImageLink,
+    isSuccess: isFetchImageAlgoSuccess,
+    refetch: refetchAlgoImageLink,
+  } = useQuery("algoResult", () =>
+    fetch(
+      `http://localhost:9091/api/graph?graphType=${
+        graphType.current || "directed"
+      }&algo=${algo.current || "bfs"}`,
+      requestOptionsAlgo
+    )
+      .then((response) => response.json())
+      .then((result: { graphUrl: string }) => result.graphUrl)
   );
 
   const myLoader = ({ src }: { src: String }) => {
@@ -96,11 +125,13 @@ export default function Home() {
 
     nodes.current = NewNodes;
     edges.current = NewEdges;
-
     await refetch();
   };
-  const submitHandler = (algo: String) => {
-    setAlgo(algo);
+  const submitHandler = (inputStartingNode: string, inputAlgo: string) => {
+    // setAlgo(algo);
+    algo.current = inputAlgo;
+    startingNode.current = inputStartingNode;
+    refetchAlgoImageLink();
   };
   return (
     <div className={styles.container}>
@@ -138,36 +169,51 @@ export default function Home() {
         </div>
         <div className={styles.controlButtons}>
           <Input
-            onSubmit={submitHandler}
+            onSubmit={(startingNode) => submitHandler(startingNode, "bfs")}
             message="BFS"
             placeHolder="Enter The  Starting Node"
           />
           <Input
-            onSubmit={submitHandler}
+            onSubmit={(startingNode) => submitHandler(startingNode, "dfs")}
             message="DFS"
             placeHolder="Enter The  Starting Node"
           />
         </div>
       </div>
-      <div>
-        <div
-          className={styles.graph}
-          style={{ height: "500px", width: "500px" }}
-        >
-          <p> Input Graph:</p>
+      <div className={styles.graph} style={{ height: "500px", width: "500px" }}>
+        <p> Input Graph:</p>
 
-          {isSuccess ? (
-            <Image
-              loader={myLoader}
-              width="500"
-              height="500"
-              src={imgLink}
-              alt="graph"
-            />
-          ) : (
-            <p> loading graph...</p>
-          )}
-        </div>
+        {isSuccess ? (
+          <Image
+            loader={myLoader}
+            width="500"
+            height="500"
+            src={imgLink}
+            alt="graph"
+          />
+        ) : (
+          <p> loading graph...</p>
+        )}
+      </div>
+      <div className={styles.graph} style={{ height: "500px", width: "500px" }}>
+        <p>
+          {" "}
+          {algo.current
+            ? algo.current + " from " + startingNode.current
+            : "bfs from 2"}{" "}
+        </p>
+
+        {isFetchImageAlgoSuccess ? (
+          <Image
+            loader={myLoader}
+            width="500"
+            height="500"
+            src={AlgoResultImageLink}
+            alt="graph"
+          />
+        ) : (
+          <p> loading graph...</p>
+        )}
       </div>
     </div>
   );

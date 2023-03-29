@@ -7,7 +7,7 @@ function Input({
 }: {
   message: string;
   placeHolder: string;
-  onSubmit: (algo: String) => void;
+  onSubmit: (startingNode: string) => void;
 }) {
   return (
     <form

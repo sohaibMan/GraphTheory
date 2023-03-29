@@ -11,6 +11,7 @@ from flask import Flask, request, send_file
 from flask_cors import CORS
 
 from createGraph import createUndirectedGraph, createDirectedGraph
+from graphtraversals import traverseBFS
 app = Flask(__name__)
 
 
@@ -28,9 +29,10 @@ def createGraph():
         return 'Content-Type not supported!'
     else:
         plt.clf()
-        if os.path.exists("./graphs"):
+        if os.path.exists("./graphs") and len([entry for entry in os.listdir("./graphs") if os.path.isfile(os.path.join("./graphs", entry))]) > 10:
             shutil.rmtree("./graphs")
-        os.mkdir("./graphs")
+        elif not os.path.exists("./graphs"):
+            os.mkdir("./graphs")
         body = request.get_json()
         graphType = request.args.get("graphType")
         # print(graphType)
@@ -40,9 +42,21 @@ def createGraph():
         elif graphType == "directed":
             G = createDirectedGraph(body['nodes'], body['edges'])
         else:
-            G = nx.Graph()
+            return {
+                "status": "error",
+                "message": "Graph type not supported!"
+            }
 
-        print(G.adjacency())
+        algo = request.args.get("algo")
+        if algo == "bfs":
+            bfsOutput = list(nx.bfs_edges(G, body["start"]))
+            G.clear()
+            G.add_edges_from(bfsOutput)
+        elif algo == "dfs":
+            dfsOutput = list(nx.dfs_edges(G, body["start"]))
+            G.clear()
+            G.add_edges_from(dfsOutput)
+
         filename = str(uuid.uuid4())
         G.name = filename
 
@@ -51,12 +65,8 @@ def createGraph():
         plt.savefig("./graphs/" + filename + ".png")
         return {
             "status": "success",
-            "message": "Graph created successfully",
             "graphId": filename,
             "graphUrl": "http://localhost:9091/api/graph?graphId=" + filename,
-            "nodes": body['nodes'],
-            "edges": body['edges']
-
         }
 
 
