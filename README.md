@@ -3,6 +3,7 @@
 Start containers
 ```
 $ docker compose up
+$ cd nextjs && npm i 
 ```
 
 
