@@ -1,6 +1,6 @@
 ## Compose sample application
 
-start containers
+Start containers
 ```
 $ docker compose up
 ```
