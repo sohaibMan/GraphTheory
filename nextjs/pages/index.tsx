@@ -131,7 +131,9 @@ export default function Home(this: any) {
     // setAlgo(algo);
     algo.current = inputAlgo;
     startingNode.current = inputStartingNode;
+    console.log(startingNode.current, inputStartingNode);
     refetchAlgoImageLink();
+    console.log("algo", algo.current);
   };
   return (
     <div className={styles.container}>
