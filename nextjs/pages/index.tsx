@@ -5,7 +5,6 @@ import TextAreaWithLineNumber from "@/pages/components/textAreaWithLineNumber";
 import { useQuery } from "react-query";
 import Button from "./components/Button";
 import Input from "./components/Input";
-import ButtonDownload from "./components/ButtonDownload";
 
 export default function Home(this: any) {
   let nodes = useRef(new Set<String>());
@@ -160,7 +159,6 @@ export default function Home(this: any) {
             isDisabled={graphType.current === "undirected" ? true : false}
             message="Undirected"
           />
-          {imgLink && <ButtonDownload link={imgLink} message="Download" />}
           <Button
             onClick={function () {
               refetch();

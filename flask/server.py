@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import logging
-from random import randint
 import shutil
 import uuid
 from matplotlib import pyplot as plt
@@ -34,6 +32,9 @@ def after_request(response):
     # print(request.args.get("graphId"))
     # os.remove("./graphs/" + request.args.get("graphId") + ".png")
     # print("./graphs/" + request.args.get("graphId") + ".png")
+    # print("called")
+    # plt.figure().clear()
+
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers',
                          'Content-Type,Authorization')
@@ -65,7 +66,11 @@ def createGraph():
     if (content_type != 'application/json'):
         return 'Content-Type not supported!'
     else:
+        # plt.clf()
+        # plt.cla()
         plt.clf()
+        plt.cla()
+        plt.close()
         # try:
         # plt.axis('off')
         # except:
@@ -100,12 +105,27 @@ def createGraph():
             dfsOutput = list(dfs_edges(G, body["start"]))
             G.clear()
             G.add_edges_from(dfsOutput)
+        elif algo == "dijkstra":
+            dfsOutput = list(nx.dijkstra_path(G, body["start"], body["end"]))
+            G.clear()
+        elif algo == "bellman-ford":
+            try:
+                dfsOutput = list(nx.bellman_ford_path(
+                    G, body["start"], body["end"]))
+                G.clear()
+            except:
+                return {
+                    "status": "error",
+                    "message": "Negative cycle detected!"
+                }
 
         filename = str(uuid.uuid4())
         G.name = filename
         # hold(False)
         nx.draw(G, with_labels=True, node_size=1000, node_color='#e67e22',
                 edge_color='#d35400', arrowsize=35, font_size=18)
+        # Remove the axis
+        # plt.axis('off')
         # G.clear()
         plt.savefig("./graphs/" + filename + ".png")
 
