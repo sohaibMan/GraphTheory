@@ -61,84 +61,84 @@ def getGraphImage():
 
 @app.route('/api/graph', methods=['POST'])
 def createGraph():
-
     content_type = request.headers.get('Content-Type')
     if (content_type != 'application/json'):
         return 'Content-Type not supported!'
-    else:
-        # plt.clf()
-        # plt.cla()
-        plt.clf()
-        plt.cla()
-        plt.close()
-        # try:
-        # plt.axis('off')
-        # except:
-        #     pass
-        # if not os.path.exists("./graphs"):
-        #     os.mkdir("./graphs")
-        # if os.path.exists("./graphs") and len([entry for entry in os.listdir("./graphs") if os.path.isfile(os.path.join("./graphs", entry))]) > 4:
-        #     shutil.rmtree("./graphs")
-        # os.mkdir("./graphs")
-        # os.rmdir("./graphs")
-        # elif not os.path.exists("./graphs"):
-        body = request.get_json()
-        graphType = request.args.get("graphType")
-        # print(graphType)
+    
+    # plt.clf()
+    # plt.cla()
+ 
+    plt.clf()
+    plt.cla()
+    plt.close()
+  
+    
+    # try:
+    # plt.axis('off')
+    # except:
+    #     pass
+    # if not os.path.exists("./graphs"):
+    #     os.mkdir("./graphs")
+    # if os.path.exists("./graphs") and len([entry for entry in os.listdir("./graphs") if os.path.isfile(os.path.join("./graphs", entry))]) > 4:
+    #     shutil.rmtree("./graphs")
+    # os.mkdir("./graphs")
+    # os.rmdir("./graphs")
+    # elif not os.path.exists("./graphs"):
+    body = request.get_json()
+    graphType = request.args.get("graphType")
+    # print(graphType)
 
-        if graphType == "undirected":
-            G = createUndirectedGraph(body['nodes'], body['edges'])
-        elif graphType == "directed":
-            G = createDirectedGraph(body['nodes'], body['edges'])
-        else:
+    if graphType == "undirected":
+        G = createUndirectedGraph(body['nodes'], body['edges'])
+    elif graphType == "directed":
+        G = createDirectedGraph(body['nodes'], body['edges'])
+    else:
+        return {
+            "status": "error",
+            "message": "Graph type not supported!"
+        }
+
+    algo = request.args.get("algo")
+    if algo == "bfs":
+        bfsOutput = list(bfs_edges(G, body["start"]))
+        G.clear()
+        G.add_edges_from(bfsOutput)
+    elif algo == "dfs":
+        dfsOutput = list(dfs_edges(G, body["start"]))
+        G.clear()
+        G.add_edges_from(dfsOutput)
+    elif algo == "dijkstra":
+        dfsOutput = list(nx.dijkstra_path(G, body["start"], body["end"]))
+        G.clear()
+    elif algo == "bellman-ford":
+        try:
+            dfsOutput = list(nx.bellman_ford_path(
+                G, body["start"], body["end"]))
+            G.clear()
+        except:
             return {
                 "status": "error",
-                "message": "Graph type not supported!"
+                "message": "Negative cycle detected!"
             }
 
-        algo = request.args.get("algo")
-        if algo == "bfs":
-            bfsOutput = list(bfs_edges(G, body["start"]))
-            G.clear()
-            G.add_edges_from(bfsOutput)
-        elif algo == "dfs":
-            dfsOutput = list(dfs_edges(G, body["start"]))
-            G.clear()
-            G.add_edges_from(dfsOutput)
-        elif algo == "dijkstra":
-            dfsOutput = list(nx.dijkstra_path(G, body["start"], body["end"]))
-            G.clear()
-        elif algo == "bellman-ford":
-            try:
-                dfsOutput = list(nx.bellman_ford_path(
-                    G, body["start"], body["end"]))
-                G.clear()
-            except:
-                return {
-                    "status": "error",
-                    "message": "Negative cycle detected!"
-                }
+    filename = str(uuid.uuid4())
+    G.name = filename
+    fig, ax = plt.subplots()
+    axin = ax.inset_axes((.0,.0,1,1))
+    nx.draw(G, with_labels=True, node_size=500, node_color='#e67e22',ax=axin,
+            edge_color='#d35400', arrowsize=25, font_size=16, font_color='#ffffff',font_weight='bold')
+    plt.savefig("./graphs/" + filename + ".png")
 
-        filename = str(uuid.uuid4())
-        G.name = filename
-        # hold(False)
-        nx.draw(G, with_labels=True, node_size=1000, node_color='#e67e22',
-                edge_color='#d35400', arrowsize=35, font_size=18)
-        # Remove the axis
-        # plt.axis('off')
-        # G.clear()
-        plt.savefig("./graphs/" + filename + ".png")
-
-        return {
-            "status": "success",
-            "graphId": filename,
-            "graphUrl": "http://localhost:9091/api/graph?graphId=" + filename,
-        }
-    # except:
-    #     return {
-    #         "status": "error",
-    #         "message": "Something went wrong!"
-    #     }
+    return {
+        "status": "success",
+        "graphId": filename,
+        "graphUrl": "http://localhost:9091/api/graph?graphId=" + filename,
+    }
+# except:
+#     return {
+#         "status": "error",
+#         "message": "Something went wrong!"
+#     }
 
 
 if __name__ == "__main__":
