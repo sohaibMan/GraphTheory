@@ -14,6 +14,10 @@ function Input({
       onSubmit={(e: any) => {
         e.preventDefault();
         onSubmit(e.currentTarget.elements.startingNode.value);
+        console.log(
+          "🚀 ~ file: Input.tsx:17 ~ e.currentTarget.elements.startingNode.value:",
+          e.currentTarget.elements.startingNode.value
+        );
         e.currentTarget.elements.startingNode.value = "";
       }}
       className={styles["input-group"]}

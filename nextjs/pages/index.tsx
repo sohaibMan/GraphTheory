@@ -1,10 +1,13 @@
 import styles from "../styles/Home.module.css";
 import { useRef, useState } from "react";
 import Image from "next/image";
-import TextAreaWithLineNumber from "@/pages/components/textAreaWithLineNumber";
+// import TextArea from "@/pages/components/textArea";
 import { useQuery } from "react-query";
 import Button from "./components/Button";
 import Input from "./components/Input";
+import * as React from "react";
+import TextareaAutosize from "@mui/base/TextareaAutosize";
+// import TextareaAutosize from "@mui/base/TextareaAutosize";
 
 export default function Home(this: any) {
   let nodes = useRef(new Set<String>());
@@ -138,10 +141,13 @@ export default function Home(this: any) {
     <div className={styles.container}>
       <div>
         <p> Add your nodes and edges here:</p>
-        <TextAreaWithLineNumber
+        <TextareaAutosize
           onChange={changeHandler}
+          aria-label="empty textarea"
           placeholder={"1 2 3\n1 3\n2 4\n2 5"}
+          style={{ width: 600, height: 200, padding: 10 }}
         />
+        ;
         <div className={styles.controlButtons}>
           <Button
             onClick={function () {
