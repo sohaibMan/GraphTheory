@@ -185,6 +185,28 @@ export default function Home(this: any) {
             placeHolder="Enter The  Starting Node"
           />
         </div>
+        <div className={styles.controlButtons}>
+          <Input
+            onSubmit={
+              (Nodes) =>
+                // submitHandler(startingNode, "dijkstra")
+                console.log(Nodes.split(","))
+              // todo add submitHandler
+            }
+            message="dijkstra"
+            placeHolder="Enter The  (Starting Node,Target Node)"
+          />
+          <Input
+            onSubmit={
+              (Nodes) =>
+                // submitHandler(startingNode, "bellan-ford")
+                console.log(Nodes.split(","))
+              // todo add submitHandler
+            }
+            message="bellman-ford"
+            placeHolder="Enter The (Starting Node:Target Node)"
+          />
+        </div>
       </div>
       <div className={styles.graph} style={{ height: "500px", width: "500px" }}>
         <p> Input Graph:</p>
