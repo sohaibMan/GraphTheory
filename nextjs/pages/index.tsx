@@ -1,8 +1,8 @@
 import styles from "../styles/Home.module.css";
-import { useRef, useState } from "react";
+import {useRef, useState} from "react";
 import Image from "next/image";
 // import TextArea from "@/pages/components/textArea";
-import { useQuery } from "react-query";
+import {useQuery} from "react-query";
 import Button from "./components/Button";
 import Input from "./components/Input";
 import * as React from "react";
@@ -10,239 +10,246 @@ import TextareaAutosize from "@mui/base/TextareaAutosize";
 // import TextareaAutosize from "@mui/base/TextareaAutosize";
 
 export default function Home(this: any) {
-  let nodes = useRef(new Set<String>());
-  let edges = useRef(new Set<[String, String, String?]>());
-  let graphType = useRef("");
-  let algo = useRef("");
-  let startingNode = useRef("");
+    let nodes = useRef(new Set<String>());
+    let edges = useRef(new Set<[String, String, String?]>());
+    let graphType = useRef("");
+    let algo = useRef("");
+    let InputNodes = useRef("");
 
-  // console.log("🚀 ~ file: index.tsx:21 ~ useEffect ~ nodes:", nodes);
+    // console.log("🚀 ~ file: index.tsx:21 ~ useEffect ~ nodes:", nodes);
 
-  let myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-  let raw = JSON.stringify(
-    nodes.current.size === 0 && edges.current.size === 0
-      ? {
-          nodes: ["1", "2", "3", "4", "5"],
-          edges: [
-            ["1", "2", "3"],
+    let raw = JSON.stringify(
+        nodes.current.size === 0 && edges.current.size === 0
+            ? {
+                nodes: ["1", "2", "3", "4", "5"],
+                edges: [
+                    ["1", "2", "3"],
+                    ["1", "3"],
+                    ["2", "4"],
+                    ["2", "5"],
+                ],
+            }
+            : {
+                nodes: Array.from(nodes.current),
+                edges: Array.from(edges.current),
+            }
+    );
+    // console.log("🚀 ~ file: index.tsx:29 ~ Home ~ raw:", raw);
+
+    // const [algo, setAlgo] = useState<String>("");
+    // todo
+
+    let requestOptions: RequestInit = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+    };
+
+    const {
+        error,
+        data: imgLink,
+        isSuccess,
+        refetch,
+    } = useQuery("graph", () =>
+        fetch(
+            `http://localhost:9091/api/graph?graphType=${
+                graphType.current || "directed"
+            }`,
+            requestOptions
+        )
+            .then((response) => response.json())
+            .then((result: { graphUrl: string }) => {
+                // console.log(result.graphUrl);
+                return result.graphUrl;
+            })
+    );
+
+    let rawAlgo = JSON.stringify({
+        nodes: ["1", "2", "3", "4", "5"],
+        edges: [
+            ["1", "2"],
             ["1", "3"],
             ["2", "4"],
             ["2", "5"],
-          ],
-        }
-      : {
-          nodes: Array.from(nodes.current),
-          edges: Array.from(edges.current),
-        }
-  );
-  // console.log("🚀 ~ file: index.tsx:29 ~ Home ~ raw:", raw);
-
-  // const [algo, setAlgo] = useState<String>("");
-  // todo
-
-  let requestOptions: RequestInit = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  };
-
-  const {
-    error,
-    data: imgLink,
-    isSuccess,
-    refetch,
-  } = useQuery("graph", () =>
-    fetch(
-      `http://localhost:9091/api/graph?graphType=${
-        graphType.current || "directed"
-      }`,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result: { graphUrl: string }) => {
-        // console.log(result.graphUrl);
-        return result.graphUrl;
-      })
-  );
-
-  var rawAlgo = JSON.stringify({
-    nodes: ["1", "2", "3", "4", "5"],
-    edges: [
-      ["1", "2"],
-      ["1", "3"],
-      ["2", "4"],
-      ["2", "5"],
-    ],
-    start: startingNode.current || "2",
-  });
-
-  var requestOptionsAlgo: RequestInit = {
-    method: "POST",
-    headers: myHeaders,
-    body: rawAlgo,
-    redirect: "follow",
-  };
-
-  const {
-    data: AlgoResultImageLink,
-    isSuccess: isFetchImageAlgoSuccess,
-    refetch: refetchAlgoImageLink,
-  } = useQuery("algoResult", () =>
-    fetch(
-      `http://localhost:9091/api/graph?graphType=${
-        graphType.current || "directed"
-      }&algo=${algo.current || "bfs"}`,
-      requestOptionsAlgo
-    )
-      .then((response) => response.json())
-      .then((result: { graphUrl: string }) => result.graphUrl)
-  );
-
-  const myLoader = ({ src }: { src: String }) => {
-    return `${src}`;
-  };
-  if (error) return <p>an error has occurred</p>;
-  const changeHandler = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const input = e.target.value;
-    const lines = input.split("\n");
-    const NewNodes = new Set<String>();
-    const NewEdges = new Set<[String, String, String?]>();
-    lines.forEach((line) => {
-      line.split(" ")[0] && NewNodes.add(line.split(" ")[0]);
-      console.log(line.split(" ")[1]);
-      console.log(line.split(" "));
-      if (line.split(" ")[1]) {
-        line.split(" ")[2]
-          ? NewEdges.add([
-              line.split(" ")[0],
-              line.split(" ")[1],
-              line.split(" ")[2],
-            ])
-          : NewEdges.add([line.split(" ")[0], line.split(" ")[1]]);
-      }
+        ],
+        start: InputNodes.current || "2",
     });
 
-    nodes.current = NewNodes;
-    edges.current = NewEdges;
-    await refetch();
-  };
-  const submitHandler = (inputStartingNode: string, inputAlgo: string) => {
-    // setAlgo(algo);
-    algo.current = inputAlgo;
-    startingNode.current = inputStartingNode;
-    console.log(startingNode.current, inputStartingNode);
-    refetchAlgoImageLink();
-    console.log("algo", algo.current);
-  };
-  return (
-    <div className={styles.container}>
-      <div>
-        <p> Add your nodes and edges here:</p>
-        <TextareaAutosize
-          onChange={changeHandler}
-          aria-label="empty textarea"
-          placeholder={"1 2 3\n1 3\n2 4\n2 5"}
-          style={{ width: 600, height: 200, padding: 10 }}
-        />
-        ;
-        <div className={styles.controlButtons}>
-          <Button
-            onClick={function () {
-              graphType.current = "directed";
-              refetch();
-            }}
-            isDisabled={graphType.current === "directed" ? true : false}
-            message="Directed"
-          />
-          <Button
-            onClick={function () {
-              graphType.current = "undirected";
-              refetch();
-            }}
-            isDisabled={graphType.current === "undirected" ? true : false}
-            message="Undirected"
-          />
-          <Button
-            onClick={function () {
-              refetch();
-            }}
-            isDisabled={false}
-            message="Redraw"
-          />
-        </div>
-        <div className={styles.controlButtons}>
-          <Input
-            onSubmit={(startingNode) => submitHandler(startingNode, "bfs")}
-            message="BFS"
-            placeHolder="Enter The  Starting Node"
-          />
-          <Input
-            onSubmit={(startingNode) => submitHandler(startingNode, "dfs")}
-            message="DFS"
-            placeHolder="Enter The  Starting Node"
-          />
-        </div>
-        <div className={styles.controlButtons}>
-          <Input
-            onSubmit={
-              (Nodes) =>
-                // submitHandler(startingNode, "dijkstra")
-                console.log(Nodes.split(","))
-              // todo add submitHandler
-            }
-            message="dijkstra"
-            placeHolder="Enter The  (Starting Node,Target Node)"
-          />
-          <Input
-            onSubmit={
-              (Nodes) =>
-                // submitHandler(startingNode, "bellan-ford")
-                console.log(Nodes.split(","))
-              // todo add submitHandler
-            }
-            message="bellman-ford"
-            placeHolder="Enter The (Starting Node:Target Node)"
-          />
-        </div>
-      </div>
-      <div className={styles.graph} style={{ height: "500px", width: "500px" }}>
-        <p> Input Graph:</p>
+    let requestOptionsAlgo: RequestInit = {
+        method: "POST",
+        headers: myHeaders,
+        body: rawAlgo,
+        redirect: "follow",
+    };
 
-        {isSuccess ? (
-          <Image
-            loader={myLoader}
-            width="500"
-            height="500"
-            src={imgLink}
-            alt="graph"
-          />
-        ) : (
-          <p> loading graph...</p>
-        )}
-      </div>
-      <div className={styles.graph} style={{ height: "500px", width: "500px" }}>
-        <p>
-          {" "}
-          {algo.current
-            ? algo.current + " from " + startingNode.current
-            : "bfs from 2"}{" "}
-        </p>
+    const {
+        data: AlgoResultImageLink,
+        isSuccess: isFetchImageAlgoSuccess,
+        refetch: refetchAlgoImageLink,
+        isLoading: isAlgoImageLoading
+    } = useQuery("algoResult", () =>
+        fetch(
+            `http://localhost:9091/api/graph?graphType=${
+                graphType.current || "directed"
+            }&algo=${algo.current || "bfs"}`,
+            requestOptionsAlgo
+        )
+            .then((response) => response.json())
+            .then((result: { graphUrl: string }) => result.graphUrl)
+    );
 
-        {isFetchImageAlgoSuccess ? (
-          <Image
-            loader={myLoader}
-            width="500"
-            height="500"
-            src={AlgoResultImageLink}
-            alt="graph"
-          />
-        ) : (
-          <p> loading graph...</p>
-        )}
-      </div>
-    </div>
-  );
+    const myLoader = ({src}: { src: String }) => {
+        return `${src}`;
+    };
+    if (error) return <p>an error has occurred</p>;
+    const changeHandler = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const input = e.target.value;
+        const lines = input.split("\n");
+        const NewNodes = new Set<String>();
+        const NewEdges = new Set<[String, String, String?]>();
+        lines.forEach((line) => {
+            line.split(" ")[0] && NewNodes.add(line.split(" ")[0]);
+            console.log(line.split(" ")[1]);
+            console.log(line.split(" "));
+            if (line.split(" ")[1]) {
+                line.split(" ")[2]
+                    ? NewEdges.add([
+                        line.split(" ")[0],
+                        line.split(" ")[1],
+                        line.split(" ")[2],
+                    ])
+                    : NewEdges.add([line.split(" ")[0], line.split(" ")[1]]);
+            }
+        });
+
+        nodes.current = NewNodes;
+        edges.current = NewEdges;
+        await refetch();
+    };
+    const submitHandler = async (Nodes: string, inputAlgo: string) => {
+        algo.current = inputAlgo;
+        InputNodes.current = Nodes;
+        await refetchAlgoImageLink();
+        console.log("algo", algo.current);
+    };
+    return (
+        <div className={styles.container}>
+            <div>
+                <p> Add your nodes and edges here:</p>
+                <TextareaAutosize
+                    onChange={changeHandler}
+                    aria-label="empty textarea"
+                    placeholder={"1 2 3\n1 3\n2 4\n2 5"}
+                    style={{width: 600, height: 200, padding: 10}}
+                />
+                ;
+                <div className={styles.controlButtons}>
+                    <Button
+                        onClick={async function () {
+                            graphType.current = "directed";
+                            await refetch();
+                        }}
+                        isDisabled={graphType.current === "directed"}
+                        message="Directed"
+                    />
+                    <Button
+                        onClick={async function () {
+                            graphType.current = "undirected";
+                            await refetch();
+                        }}
+                        isDisabled={graphType.current === "undirected"}
+                        message="Undirected"
+                    />
+                    <Button
+                        onClick={async function () {
+                            await refetch();
+                        }}
+                        isDisabled={false}
+                        message="Redraw"
+                    />
+                </div>
+                <div className={styles.controlButtons}>
+                    <Input
+                        disabled={isAlgoImageLoading}
+                        onSubmit={(InputNodes) => submitHandler(InputNodes, "bfs")}
+                        message="BFS"
+                        placeHolder="Enter The  Starting Node"
+                        regex="^\d+$|^[a-zA-Z]+$"
+                    />
+                    <Input
+                        disabled={isAlgoImageLoading}
+                        onSubmit={(InputNodes) => submitHandler(InputNodes, "dfs")}
+                        message="DFS"
+                        placeHolder="Enter The  Starting Node"
+                        regex="^\d+$|^[a-zA-Z]+$"
+                    />
+                </div>
+                <div className={styles.controlButtons}>
+                    <Input
+                        disabled={isAlgoImageLoading}
+                        onSubmit={
+                            (Nodes) =>
+                                // submitHandler(InputNodes, "dijkstra")
+                                console.log(Nodes.split(","))
+                            // todo add submitHandler
+                        }
+                        message="dijkstra"
+                        placeHolder="Enter The  (Starting Node,Target Node)"
+                        regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
+                    />
+                    <Input
+                        disabled={isAlgoImageLoading}
+                        onSubmit={
+                            (Nodes) =>
+                                submitHandler(Nodes, "bellman ford")
+                            // console.log(Nodes.split(","))
+                            // todo add submitHandler
+                        }
+                        message="bellman-ford"
+                        placeHolder="Enter The (Starting Node:Target Node)"
+                        regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
+                    />
+                </div>
+            </div>
+            <div className={styles.graph} style={{height: "500px", width: "500px"}}>
+                <p> Input Graph:</p>
+
+                {isSuccess ? (
+                    <Image
+                        loader={myLoader}
+                        width="500"
+                        height="500"
+                        src={imgLink}
+                        alt="graph"
+                    />
+                ) : (
+                    <p> loading graph...</p>
+                )}
+            </div>
+            <div className={styles.graph} style={{height: "500px", width: "500px"}}>
+                <p>
+                    {" "}
+                    {algo.current
+                        ? algo.current + " from " + InputNodes.current
+                        : "bfs from 2"}{" "}
+                </p>
+
+                {isFetchImageAlgoSuccess ? (
+                    <Image
+                        loader={myLoader}
+                        width="500"
+                        height="500"
+                        src={AlgoResultImageLink}
+                        alt="graph"
+                    />
+                ) : (
+                    <p> loading graph...</p>
+                )}
+            </div>
+        </div>
+    );
 }

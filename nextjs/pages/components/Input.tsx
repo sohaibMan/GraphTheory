@@ -4,10 +4,14 @@ function Input({
   message,
   placeHolder,
   onSubmit,
+    regex,
+    disabled
 }: {
   message: string;
   placeHolder: string;
   onSubmit: (startingNode: string, endNode?: string) => void;
+  regex?: string;
+    disabled: boolean;
 }) {
   return (
     <form
@@ -26,6 +30,8 @@ function Input({
         placeholder={placeHolder}
         autoComplete="off"
         required
+        pattern={regex}
+        disabled={disabled}
       />
       <button type="submit" className={styles["button--submit"]}>
         {message}
