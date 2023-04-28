@@ -136,21 +136,22 @@ export default function Home(this: any) {
     return (
         <div className={styles.container}>
             <div>
-                <p> Add your nodes and edges here:</p>
-                <TextareaAutosize
-                    onChange={changeHandler}
-                    aria-label="empty textarea"
-                    placeholder={"1 2 3\n1 3\n2 4\n2 5"}
-                    style={{
-                        width: 300,
-                        height: 100,
-                        padding: 10,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}
-                />
-                ;
+
+                    <p> Add your nodes and edges here:</p>
+                    <TextareaAutosize
+                        onChange={changeHandler}
+                        aria-label="empty textarea"
+                        placeholder={"1 2 3\n1 3\n2 4\n2 5"}
+                        style={{
+                            width: "400px",
+                            margin: "auto",
+                            height: 100,
+                            padding: 10,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center"
+                        }}
+                    />
                 <div className={styles.controlButtons}>
                     <Button
                         onClick={async function () {
@@ -219,41 +220,55 @@ export default function Home(this: any) {
                     />
                 </div>
             </div>
-            <div className={styles.graph} style={{height: "300px", width: "500px"}}>
+            <div className={styles.graph} style={{height: "550px", width: "640px"}}>
+                <p> Input Graph:</p>
                 {isSuccess ? (
                     <Image
                         loader={myLoader}
-                        width="250"
-                        height="500"
+                        width="640"
+                        height="480"
                         src={imgLink}
                         alt="graph"
                     />
                 ) : (
-                    <div style={{width: "250px", height: "250px",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    <div style={{
+                        width: "250px",
+                        height: "250px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}>
                         <p> loading graph...</p>
                     </div>
                 )}
-                <p> Input Graph:</p>
             </div>
-            <div className={styles.graph} style={{height: "300px", width: "500px"}}>
+            <div className={styles.graph} style={{height: "550px", width: "640px"}}>
+                <p>
+                    {algo.current
+                        ? algo.current + " from " + InputNodes.current
+                        : "bfs from 2"}
+                </p>
+
                 {isFetchImageAlgoSuccess ? (
                     <Image
                         loader={myLoader}
-                        width="250"
-                        height="500"
+                        width="640"
+                        height="480"
                         src={AlgoResultImageLink}
                         alt="graph"
                     />
                 ) : (
-                    <div style={{width: "250px", height: "250px",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                        <p> loading graph...</p>
+                    <div style={{
+                        width: "250px",
+                        height: "250px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}><p> loading graph...</p>
+
                     </div>
                 )}
-                <p>
-                    {algo.current
-                        ? algo.current + " from " + InputNodes.current
-                        : "bfs from 2"}{" "}
-                </p>
+
             </div>
         </div>
     );

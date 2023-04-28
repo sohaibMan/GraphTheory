@@ -1,11 +1,12 @@
 .input-group {
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .input {
-    min-height: 40px;
-    width: 150px;
+    min-height: 50px;
+    width: 200px;
     padding: 0 1rem;
     color: inherit;
     font-size: 10px;
@@ -15,8 +16,11 @@
 }
 
 .button--submit {
-    min-height: 40px;
-    padding: 0.5em 1em;
+    min-height: 55px;
+    font-weight: bold;
+    width: 100px;
+    /*padding: 0.5em 1em;*/
+    padding: 0 1rem;
     border: none;
     border-radius: 0 6px 6px 0;
     background-color: #e67e22;
