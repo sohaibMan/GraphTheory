@@ -1,13 +1,12 @@
 import styles from "../styles/Home.module.css";
-import {useRef, useState} from "react";
+import * as React from "react";
+import {useRef} from "react";
 import Image from "next/image";
-// import TextArea from "@/pages/components/textArea";
+
 import {useQuery} from "react-query";
 import Button from "./components/Button";
 import Input from "./components/Input";
-import * as React from "react";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
-// import TextareaAutosize from "@mui/base/TextareaAutosize";
 
 export default function Home(this: any) {
     let nodes = useRef(new Set<String>());
@@ -37,9 +36,7 @@ export default function Home(this: any) {
                 edges: Array.from(edges.current),
             }
     );
-    // console.log("🚀 ~ file: index.tsx:29 ~ Home ~ raw:", raw);
 
-    // const [algo, setAlgo] = useState<String>("");
     // todo
 
     let requestOptions: RequestInit = {
@@ -144,7 +141,14 @@ export default function Home(this: any) {
                     onChange={changeHandler}
                     aria-label="empty textarea"
                     placeholder={"1 2 3\n1 3\n2 4\n2 5"}
-                    style={{width: 600, height: 200, padding: 10}}
+                    style={{
+                        width: 300,
+                        height: 100,
+                        padding: 10,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}
                 />
                 ;
                 <div className={styles.controlButtons}>
@@ -215,40 +219,41 @@ export default function Home(this: any) {
                     />
                 </div>
             </div>
-            <div className={styles.graph} style={{height: "500px", width: "500px"}}>
-                <p> Input Graph:</p>
-
+            <div className={styles.graph} style={{height: "300px", width: "500px"}}>
                 {isSuccess ? (
                     <Image
                         loader={myLoader}
-                        width="500"
+                        width="250"
                         height="500"
                         src={imgLink}
                         alt="graph"
                     />
                 ) : (
-                    <p> loading graph...</p>
+                    <div style={{width: "250px", height: "250px",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                        <p> loading graph...</p>
+                    </div>
                 )}
+                <p> Input Graph:</p>
             </div>
-            <div className={styles.graph} style={{height: "500px", width: "500px"}}>
-                <p>
-                    {" "}
-                    {algo.current
-                        ? algo.current + " from " + InputNodes.current
-                        : "bfs from 2"}{" "}
-                </p>
-
+            <div className={styles.graph} style={{height: "300px", width: "500px"}}>
                 {isFetchImageAlgoSuccess ? (
                     <Image
                         loader={myLoader}
-                        width="500"
+                        width="250"
                         height="500"
                         src={AlgoResultImageLink}
                         alt="graph"
                     />
                 ) : (
-                    <p> loading graph...</p>
+                    <div style={{width: "250px", height: "250px",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                        <p> loading graph...</p>
+                    </div>
                 )}
+                <p>
+                    {algo.current
+                        ? algo.current + " from " + InputNodes.current
+                        : "bfs from 2"}{" "}
+                </p>
             </div>
         </div>
     );

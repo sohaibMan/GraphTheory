@@ -5,7 +5,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
 }
 .container .graph {
   border-radius: 5px;
