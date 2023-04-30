@@ -24,14 +24,14 @@ def create_directed_graph(nodes, edges):
 def add_weighted_to_edges_if_exists(g, edges):
     isWeighted = False
     for edge in edges:
+        print("edge", edge)
         if len(edge) == 2:
-            g.add_edge(edge[0], edge[1])
+            g.add_edge(edge[0], edge[1], weight=1)
         else:
-            # print()
             g.add_edge(edge[0], edge[1], weight=edge[2])
             isWeighted = True
-    # if isWeighted:
-        # edge_labels = nx.get_edge_attributes(g, "weight")
-        # pos = nx.spring_layout(g)
-        # nx.draw_networkx_edges(g, pos, edge_labels)
+    if isWeighted:
+        edge_labels = nx.get_edge_attributes(g, "weight")
+        pos = nx.spring_layout(g)
+        nx.draw_networkx_edges(g, pos, edge_labels)
     return g

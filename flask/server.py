@@ -47,10 +47,7 @@ def create_graph():
     else:
 
         body = request.get_json()
-        # print(body)
         graphType = request.args.get("graphType")
-        print(graphType)
-
         if graphType == "undirected":
             G = create_undirected_graph(body["nodes"], body["edges"])
         elif graphType == "directed":
@@ -73,7 +70,6 @@ def create_graph():
             G.add_edges_from(dfsOutput)
             G.clear()
         elif algo == "bellman-ford":
-            # todo
             # try:
             dfsOutput = list(nx.bellman_ford_path(G, body["start"], body["end"]))
             G.add_edges_from(dfsOutput)
@@ -82,9 +78,8 @@ def create_graph():
         filename = str(uuid.uuid4())
 
         fig, ax = plt.subplots()
-        axis = ax.inset_axes([0.1, 0.1, 0.8, 0.8])
-        plt.cla()
-
+        # ax.hist(filename)
+        # ax.set_title("Graph")
         nx.draw(
             G,
             with_labels=True,
@@ -95,11 +90,10 @@ def create_graph():
             font_weight="bold",
             arrowsize=25,
             font_size=15,
-            # edge_labels=edge_labels,
-            ax=axis,
             # pos=nx.spring_layout(G)
         )
         fig.savefig("./graphs/" + filename + ".png")
+        plt.close(fig)
 
         return {
             "status": "success",
@@ -109,4 +103,4 @@ def create_graph():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=os.environ.get("FLASK_SERVER_PORT", 9090), debug=True)
+    app.run(host="0.0.0.0", port=os.environ.get("FLASK_SERVER_PORT", 9091), debug=True)
