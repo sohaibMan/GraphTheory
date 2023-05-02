@@ -94,7 +94,8 @@ def create_graph():
         )
         fig.savefig("./graphs/" + filename + ".png")
         plt.close(fig)
-
+        # return send_file("./graphs/" + filename + ".png", mimetype="image/png")
+        #
         return {
             "status": "success",
             "graphId": filename,

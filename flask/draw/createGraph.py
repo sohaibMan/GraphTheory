@@ -24,7 +24,7 @@ def create_directed_graph(nodes, edges):
 def add_weighted_to_edges_if_exists(g, edges):
     isWeighted = False
     for edge in edges:
-        print("edge", edge)
+        # print("edge", edge)
         if len(edge) == 2:
             g.add_edge(edge[0], edge[1], weight=1)
         else:

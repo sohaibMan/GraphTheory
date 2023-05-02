@@ -51,8 +51,8 @@ export default function Home(this: any) {
         data: imgLink,
         isSuccess,
         refetch,
-    } = useQuery("graph", () =>
-        fetch(
+    } = useQuery({
+        queryKey: "graph", queryFn: () => fetch(
             `http://localhost:9091/api/graph?graphType=${
                 graphType.current || "directed"
             }`,
@@ -62,8 +62,9 @@ export default function Home(this: any) {
             .then((result: { graphUrl: string }) => {
                 // console.log(result.graphUrl);
                 return result.graphUrl;
-            })
-    );
+            }),
+
+    });
 
     let rawAlgo = JSON.stringify({
         nodes: ["1", "2", "3", "4", "5"],
@@ -88,20 +89,21 @@ export default function Home(this: any) {
         isSuccess: isFetchImageAlgoSuccess,
         refetch: refetchAlgoImageLink,
         isLoading: isAlgoImageLoading
-    } = useQuery("algoResult", () =>
-        fetch(
-            `http://localhost:9091/api/graph?graphType=${
-                graphType.current || "directed"
-            }&algo=${algo.current || "bfs"}`,
-            requestOptionsAlgo
-        )
-            .then((response) => response.json())
-            .then((result: { graphUrl: string }) => result.graphUrl)
-    );
+    } = useQuery("algoResult", {
+        queryFn: () =>
+            fetch(
+                `http://localhost:9091/api/graph?graphType=${
+                    graphType.current || "directed"
+                }&algo=${algo.current || "dfs"}`,
+                requestOptionsAlgo
+            )
+                .then((response) => response.json())
+                .then((result: { graphUrl: string }) => result.graphUrl)
+        ,
+        enabled: isSuccess
+    });
 
-    const myLoader = ({src}: { src: String }) => {
-        return `${src}`;
-    };
+
     if (error) return <p>an error has occurred</p>;
     const changeHandler = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const input = e.target.value;
@@ -137,21 +139,21 @@ export default function Home(this: any) {
         <div className={styles.container}>
             <div>
 
-                    <p> Add your nodes and edges here:</p>
-                    <TextareaAutosize
-                        onChange={changeHandler}
-                        aria-label="empty textarea"
-                        placeholder={"1 2 3\n1 3\n2 4\n2 5"}
-                        style={{
-                            width: "400px",
-                            margin: "auto",
-                            height: 100,
-                            padding: 10,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center"
-                        }}
-                    />
+                <p> Add your nodes and edges here:</p>
+                <TextareaAutosize
+                    onChange={changeHandler}
+                    aria-label="empty textarea"
+                    placeholder={"1 2 3\n1 3\n2 4\n2 5"}
+                    style={{
+                        width: "400px",
+                        margin: "auto",
+                        height: 100,
+                        padding: 10,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}
+                />
                 <div className={styles.controlButtons}>
                     <Button
                         onClick={async function () {
@@ -224,7 +226,7 @@ export default function Home(this: any) {
                 <p> Input Graph:</p>
                 {isSuccess ? (
                     <Image
-                        loader={myLoader}
+                        // loader={myLoader}
                         width="640"
                         height="480"
                         src={imgLink}
@@ -251,7 +253,7 @@ export default function Home(this: any) {
 
                 {isFetchImageAlgoSuccess ? (
                     <Image
-                        loader={myLoader}
+                        // loader={myLoader}
                         width="640"
                         height="480"
                         src={AlgoResultImageLink}
