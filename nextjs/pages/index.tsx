@@ -37,7 +37,6 @@ export default function Home(this: any) {
             }
     );
 
-    // todo
 
     let requestOptions: RequestInit = {
         method: "POST",
@@ -94,7 +93,7 @@ export default function Home(this: any) {
             fetch(
                 `http://localhost:9091/api/graph?graphType=${
                     graphType.current || "directed"
-                }&algo=${algo.current || "dfs"}`,
+                }&algo=${algo.current || "bfs"}`,
                 requestOptionsAlgo
             )
                 .then((response) => response.json())
@@ -143,7 +142,7 @@ export default function Home(this: any) {
                 <TextareaAutosize
                     onChange={changeHandler}
                     aria-label="empty textarea"
-                    placeholder={"1 2 3\n1 3\n2 4\n2 5"}
+                    placeholder={"1 2\n1 3\n2 4\n2 5"}
                     style={{
                         width: "400px",
                         margin: "auto",
@@ -226,7 +225,6 @@ export default function Home(this: any) {
                 <p> Input Graph:</p>
                 {isSuccess ? (
                     <Image
-                        // loader={myLoader}
                         width="640"
                         height="480"
                         src={imgLink}
@@ -253,7 +251,6 @@ export default function Home(this: any) {
 
                 {isFetchImageAlgoSuccess ? (
                     <Image
-                        // loader={myLoader}
                         width="640"
                         height="480"
                         src={AlgoResultImageLink}

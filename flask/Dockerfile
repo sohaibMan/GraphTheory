@@ -7,7 +7,7 @@ COPY requirements.txt /src
 
 # RUN --mount=type=cache,target=/root/.cache/pip && \ 
 # RUN  apt-get update && apt-get install -y python3 python3-pip  python3-matplotlib && \
-RUN apk add g++ jpeg-dev zlib-dev libjpeg make
+#RUN apk add g++ jpeg-dev zlib-dev libjpeg make
 RUN  pip3 install -r requirements.txt 
 
 

@@ -2,7 +2,7 @@
 from collections import deque
 
 
-def generic_bfs_edges(G, source, neighbors=None, depth_limit=None, sort_neighbors=None):
+def generic_bfs_edges(graph, source, neighbors=None, depth_limit=None, sort_neighbors=None):
 
     if callable(sort_neighbors):
         _neighbors = neighbors
@@ -10,7 +10,7 @@ def generic_bfs_edges(G, source, neighbors=None, depth_limit=None, sort_neighbor
 
     visited = {source}
     if depth_limit is None:
-        depth_limit = len(G)
+        depth_limit = len(graph)
     queue = deque([(source, depth_limit, neighbors(source))])
     while queue:
         parent, depth_now, children = queue[0]
@@ -25,9 +25,9 @@ def generic_bfs_edges(G, source, neighbors=None, depth_limit=None, sort_neighbor
             queue.popleft()
 
 
-def bfs_edges(G, source, reverse=False, depth_limit=None, sort_neighbors=None):
-    if reverse and G.is_directed():
-        successors = G.predecessors
+def bfs_edges(graph, source, reverse=False, depth_limit=None, sort_neighbors=None):
+    if reverse and graph.is_directed():
+        successors = graph.predecessors
     else:
-        successors = G.neighbors
-    yield from generic_bfs_edges(G, source, successors, depth_limit, sort_neighbors)
+        successors = graph.neighbors
+    yield from generic_bfs_edges(graph, source, successors, depth_limit, sort_neighbors)
