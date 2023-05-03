@@ -81,7 +81,7 @@ def create_graph():
     return {
         "status": "success",
         "graphId": filename,
-        "graphUrl": "http://localhost:9091/api/graph?graphId=" + filename,
+        "graphUrl": "http://localhost:5000/api/graph?graphId=" + filename,
     }
 
 

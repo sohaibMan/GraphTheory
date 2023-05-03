@@ -7,6 +7,7 @@ import {useQuery} from "react-query";
 import Button from "./components/Button";
 import Input from "./components/Input";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
+import CircularIndeterminate from "@/pages/components/CircularIndeterminate";
 
 export default function Home(this: any) {
     let nodes = useRef(new Set<String>());
@@ -52,7 +53,7 @@ export default function Home(this: any) {
         refetch,
     } = useQuery({
         queryKey: "graph", queryFn: () => fetch(
-            `http://localhost:9091/api/graph?graphType=${
+            `http://${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_PORT}/api/graph?graphType=${
                 graphType.current || "directed"
             }`,
             requestOptions
@@ -91,7 +92,7 @@ export default function Home(this: any) {
     } = useQuery("algoResult", {
         queryFn: () =>
             fetch(
-                `http://localhost:9091/api/graph?graphType=${
+                `http://${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_PORT}/api/graph?graphType=${
                     graphType.current || "directed"
                 }&algo=${algo.current || "bfs"}`,
                 requestOptionsAlgo
@@ -136,21 +137,21 @@ export default function Home(this: any) {
     };
     return (
         <div className={styles.container}>
-            <div>
-
-                <p> Add your nodes and edges here:</p>
+            <div className={styles.GraphController}>
                 <TextareaAutosize
                     onChange={changeHandler}
                     aria-label="empty textarea"
-                    placeholder={"1 2\n1 3\n2 4\n2 5"}
+                    placeholder={"node->edge\n1 2\n1 3\n2 4\n2 5"}
                     style={{
-                        width: "400px",
+                        width: "300px",
                         margin: "auto",
                         height: 100,
                         padding: 10,
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "center"
+                        justifyContent: "center",
+                        background: "#f8f9fa",
+                        borderRadius: "5px"
                     }}
                 />
                 <div className={styles.controlButtons}>
@@ -183,14 +184,14 @@ export default function Home(this: any) {
                         disabled={isAlgoImageLoading}
                         onSubmit={(InputNodes) => submitHandler(InputNodes, "bfs")}
                         message="BFS"
-                        placeHolder="Enter The  Starting Node"
+                        placeHolder="start"
                         regex="^\d+$|^[a-zA-Z]+$"
                     />
                     <Input
                         disabled={isAlgoImageLoading}
                         onSubmit={(InputNodes) => submitHandler(InputNodes, "dfs")}
                         message="DFS"
-                        placeHolder="Enter The  Starting Node"
+                        placeHolder="start"
                         regex="^\d+$|^[a-zA-Z]+$"
                     />
                 </div>
@@ -204,7 +205,7 @@ export default function Home(this: any) {
                             // todo add submitHandler
                         }
                         message="dijkstra"
-                        placeHolder="Enter The  (Starting Node,Target Node)"
+                        placeHolder="start,target"
                         regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
                     />
                     <Input
@@ -216,58 +217,49 @@ export default function Home(this: any) {
                             // todo add submitHandler
                         }
                         message="bellman-ford"
-                        placeHolder="Enter The (Starting Node:Target Node)"
+                        placeHolder="start:target"
                         regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
                     />
                 </div>
             </div>
-            <div className={styles.graph} style={{height: "550px", width: "640px"}}>
-                <p> Input Graph:</p>
-                {isSuccess ? (
-                    <Image
-                        width="640"
-                        height="480"
-                        src={imgLink}
-                        alt="graph"
-                    />
-                ) : (
-                    <div style={{
-                        width: "250px",
-                        height: "250px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}>
-                        <p> loading graph...</p>
-                    </div>
-                )}
-            </div>
-            <div className={styles.graph} style={{height: "550px", width: "640px"}}>
-                <p>
-                    {algo.current
-                        ? algo.current + " from " + InputNodes.current
-                        : "bfs from 2"}
-                </p>
+            <div className={styles.graphContainer}>
+                <div className={styles.graph}>
+                    <p> Input Graph:</p>
+                    {isSuccess ? (
+                        <Image
+                            width="400"
+                            height="250"
+                            src={imgLink}
+                            alt="graph"
+                        />
+                    ) : (
+                        <CircularIndeterminate/>
+                    )}
+                </div>
+                <div className={styles.graph}>
+                    <p>
+                        {"Output Graph : " + (
+                            algo.current
+                                ? algo.current + " from " + InputNodes.current
+                                : "bfs from 2"
+                        )
+                        }
+                    </p>
 
-                {isFetchImageAlgoSuccess ? (
-                    <Image
-                        width="640"
-                        height="480"
-                        src={AlgoResultImageLink}
-                        alt="graph"
-                    />
-                ) : (
-                    <div style={{
-                        width: "250px",
-                        height: "250px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}><p> loading graph...</p>
+                    {isFetchImageAlgoSuccess ? (
+                        <Image
+                            width="400"
+                            height="250"
+                            src={AlgoResultImageLink}
+                            alt="graph"
+                        />
+                    ) : (
 
-                    </div>
-                )}
+                        <CircularIndeterminate/>
 
+                    )}
+
+                </div>
             </div>
         </div>
     );

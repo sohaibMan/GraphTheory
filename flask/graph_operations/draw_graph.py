@@ -13,10 +13,11 @@ def draw_graph(graph, filename):
         edge_color="#d35400",
         font_color="white",
         font_weight="bold",
-        arrowsize=25,
+        arrowsize=20,
         font_size=15,
-        # pos=nx.spring_layout(G)
+
     )
+    fig.set_facecolor("#f8f9fa")
     # save the graph
     plt.savefig("./tmp_output/" + filename + ".png")
     return fig
