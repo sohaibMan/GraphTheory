@@ -22,6 +22,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-query": "^3.39.3",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "@react-buddy/ide-toolbox-next": "^2.4.0",
+    "@react-buddy/palette-mui": "^5.0.1"
   }
 }

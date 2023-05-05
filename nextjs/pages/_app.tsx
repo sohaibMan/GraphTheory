@@ -1,11 +1,17 @@
-import type { AppProps } from "next/app";
-import { QueryClient, QueryClientProvider } from "react-query";
+import type {AppProps} from "next/app";
+import {QueryClient, QueryClientProvider} from "react-query";
+import {DevSupport} from "@react-buddy/ide-toolbox-next";
+import {ComponentPreviews, useInitial} from "@/components/dev";
 
 const queryClient = new QueryClient();
-export default function App({ Component, pageProps }: AppProps) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Component {...pageProps} />
-    </QueryClientProvider>
-  );
+export default function App({Component, pageProps}: AppProps) {
+    return (
+        <QueryClientProvider client={queryClient}>
+            <DevSupport ComponentPreviews={ComponentPreviews}
+                        useInitialHook={useInitial}
+            >
+                <Component {...pageProps} />
+            </DevSupport>
+        </QueryClientProvider>
+    );
 }

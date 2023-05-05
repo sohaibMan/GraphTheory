@@ -1,24 +1,48 @@
 .container {
-  width: 100vw;
-  height: 100vh;
-  background: #eee;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
+    width: 100vw;
+    height: 100vh;
+    background: #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
 }
+
 .container .graph {
-  border-radius: 5px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
+
 .controlButtons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem;
+}
+
+.graphContainer {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+
+}
+
+.graphContainer div {
+    width: 400px;
+    height: 300px;
+}
+
+.graphContainer {
+    flex-grow: 4;
+    align-items: center;
+}
+
+.graph p {
+    color: #212529;
 }
