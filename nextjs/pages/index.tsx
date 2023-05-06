@@ -16,7 +16,7 @@ export default function Home(this: any) {
     let algo = useRef("");
     let InputNodes = useRef("");
 
-    // console.log("🚀 ~ file: index.tsx:21 ~ useEffect ~ nodes:", nodes);
+
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -26,7 +26,7 @@ export default function Home(this: any) {
             ? {
                 nodes: ["1", "2", "3", "4", "5"],
                 edges: [
-                    ["1", "2", "3"],
+                    ["1", "2"],
                     ["1", "3"],
                     ["2", "4"],
                     ["2", "5"],
@@ -89,7 +89,7 @@ export default function Home(this: any) {
         isSuccess: isFetchImageAlgoSuccess,
         refetch: refetchAlgoImageLink,
         isLoading: isAlgoImageLoading
-    } = useQuery("algoResult", {
+    } = useQuery(["algoResult", algo.current, nodes.current], {
         queryFn: () =>
             fetch(
                 `http://${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_PORT}/api/graph?graphType=${
@@ -101,6 +101,7 @@ export default function Home(this: any) {
                 .then((result: { graphUrl: string }) => result.graphUrl)
         ,
         enabled: isSuccess
+        // enabled: false
     });
 
 
@@ -130,10 +131,10 @@ export default function Home(this: any) {
         await refetch();
     };
     const submitHandler = async (Nodes: string, inputAlgo: string) => {
+        console.log(Nodes)
         algo.current = inputAlgo;
         InputNodes.current = Nodes;
         await refetchAlgoImageLink();
-        console.log("algo", algo.current);
     };
     return (
         <div className={styles.container}>
@@ -141,9 +142,9 @@ export default function Home(this: any) {
                 <TextareaAutosize
                     onChange={changeHandler}
                     aria-label="empty textarea"
-                    placeholder={"node->edge\n1 2\n1 3\n2 4\n2 5"}
+                    placeholder={"node->edge->weight\n1 2\n1 3\n2 4\n2 5"}
                     style={{
-                        width: "300px",
+                        width: "450px",
                         margin: "auto",
                         height: 100,
                         padding: 10,
@@ -227,8 +228,8 @@ export default function Home(this: any) {
                     <p> Input Graph:</p>
                     {isSuccess ? (
                         <Image
-                            width="400"
-                            height="250"
+                            width="600"
+                            height="300"
                             src={imgLink}
                             alt="graph"
                         />
@@ -248,8 +249,8 @@ export default function Home(this: any) {
 
                     {isFetchImageAlgoSuccess ? (
                         <Image
-                            width="400"
-                            height="250"
+                            width="600"
+                            height="300"
                             src={AlgoResultImageLink}
                             alt="graph"
                         />

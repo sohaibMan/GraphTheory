@@ -7,7 +7,7 @@ def create_undirected_graph(nodes, edges):
     G = nx.Graph()
     # add a node
     G.add_nodes_from(nodes)
-    add_weighted_to_edges_if_exists(G, edges)
+    G = add_weighted_to_edges_if_exists(G, edges)
     print(G.nodes)
     return G
 
@@ -17,21 +17,15 @@ def create_directed_graph(nodes, edges):
     G = nx.DiGraph()
     # add a node
     G.add_nodes_from(nodes)
-    add_weighted_to_edges_if_exists(G, edges)
+    G = add_weighted_to_edges_if_exists(G, edges)
     return G
 
 
-def add_weighted_to_edges_if_exists(g, edges):
-    isWeighted = False
+def add_weighted_to_edges_if_exists(G, edges):
     for edge in edges:
-        # print("edge", edge)
         if len(edge) == 2:
-            g.add_edge(edge[0], edge[1], weight=1)
+            G.add_edge(edge[0], edge[1])
         else:
-            g.add_edge(edge[0], edge[1], weight=edge[2])
-            isWeighted = True
-    if isWeighted:
-        edge_labels = nx.get_edge_attributes(g, "weight")
-        pos = nx.spring_layout(g)
-        nx.draw_networkx_edges(g, pos, edge_labels)
-    return g
+            G.add_edge(edge[0], edge[1], weight=edge[2])
+
+    return G
