@@ -4,6 +4,7 @@ from algorithms.depth_first_search import dfs_edges
 
 
 def algo_router(graph, algo, body):
+    print(graph, algo, body)
     match algo:
         case "bfs":
             out_put = list(bfs_edges(graph, body["start"]))
