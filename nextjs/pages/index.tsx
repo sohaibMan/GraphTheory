@@ -1,5 +1,6 @@
 import styles from "../styles/Home.module.css";
 import * as React from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useQuery } from "react-query";
 import Button from "./components/Button";
@@ -21,11 +22,10 @@ const defaultGraphValues = {
 };
 
 export default function Home(this: any) {
-  const [graphState, setGraphState] = React.useState(() => defaultGraphValues);
-
-  console.log(graphState);
+  const [graphState, setGraphState] = useState(() => defaultGraphValues);
 
   let myHeaders = new Headers();
+
   myHeaders.append("Content-Type", "application/json");
 
   let raw = JSON.stringify({
@@ -46,16 +46,14 @@ export default function Home(this: any) {
     isSuccess,
     refetch,
   } = useQuery({
-    queryKey: "graph",
+    queryKey: ["graph"],
     queryFn: () =>
       fetch(
         `http://${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_PORT}/api/graph?graphType=${graphState.graphType}`,
         requestOptions
       )
         .then((response) => response.json())
-        .then((result: { graphUrl: string }) => {
-          return result.graphUrl;
-        }),
+        .then((result: { graphUrl: string }) => result.graphUrl),
   });
 
   let rawAlgo = JSON.stringify({
@@ -76,17 +74,17 @@ export default function Home(this: any) {
     isSuccess: isFetchImageAlgoSuccess,
     refetch: refetchAlgoImageLink,
     isLoading: isAlgoImageLoading,
-  } = useQuery("algoResult", {
-    queryFn: () =>
+  } = useQuery(
+    ["algoResult", graphState.algo, graphState.InputNodes],
+    () =>
       fetch(
         `http://${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_PORT}/api/graph?graphType=${graphState.graphType}&algo=${graphState.algo}`,
         requestOptionsAlgo
       )
         .then((response) => response.json())
         .then((result: { graphUrl: string }) => result.graphUrl),
-    enabled: isSuccess,
-    // enabled: false
-  });
+    { enabled: isSuccess }
+  );
 
   if (error) return <p>an error has occurred</p>;
   const changeHandler = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -125,7 +123,9 @@ export default function Home(this: any) {
       prevState.InputNodes = InputNodes;
       return prevState;
     });
+
     await refetchAlgoImageLink();
+    // await refetchAlgoImageLink();
   };
   return (
     <div className={styles.container}>
