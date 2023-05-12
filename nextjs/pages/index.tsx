@@ -129,7 +129,7 @@ export default function Home(this: any) {
   };
   return (
     <div className={styles.container}>
-      <div className={styles.GraphController}>
+      <div className={styles.graphController}>
         <TextareaAutosize
           onChange={changeHandler}
           aria-label="empty textarea"
@@ -196,24 +196,31 @@ export default function Home(this: any) {
         <div className={styles.controlButtons}>
           <Input
             disabled={isAlgoImageLoading}
-            onSubmit={
-              (Nodes) =>
-                // submitHandler(InputNodes, "dijkstra")
-                console.log(Nodes.split(","))
-              // todo add submitHandler
-            }
+            onSubmit={(InputNodes) => submitHandler(InputNodes, "dijkstra")}
             message="dijkstra"
             placeHolder="start,target"
             regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
           />
           <Input
             disabled={isAlgoImageLoading}
-            onSubmit={
-              (Nodes) => submitHandler(Nodes, "bellman ford")
-              // console.log(Nodes.split(","))
-              // todo add submitHandler
-            }
+            onSubmit={(InputNodes) => submitHandler(InputNodes, "bellman ford")}
             message="bellman-ford"
+            placeHolder="start:target"
+            regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
+          />
+        </div>
+        <div className={styles.controlButtons}>
+          <Input
+            disabled={isAlgoImageLoading}
+            onSubmit={(InputNodes) => submitHandler(InputNodes, "kosaraju")}
+            message="kosaraju"
+            placeHolder="start:target"
+            regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
+          />
+          <Input
+            disabled={isAlgoImageLoading}
+            onSubmit={(InputNodes) => submitHandler(InputNodes, "prime")}
+            message="prime"
             placeHolder="start:target"
             regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
           />
@@ -221,32 +228,25 @@ export default function Home(this: any) {
       </div>
       <div className={styles.graphContainer}>
         <div className={styles.graph}>
-          <p> Input Graph:</p>
           {isSuccess ? (
-            <Image width="600" height="300" src={imgLink} alt="graph" />
+            <img src={imgLink} alt="graph" />
           ) : (
+            // <h1>hello</h1>
+            // <></>
+
             <CircularIndeterminate />
           )}
         </div>
         <div className={styles.graph}>
-          <p>
-            {"Output Graph : " +
-              (graphState.algo
-                ? graphState.algo + " from " + graphState.InputNodes
-                : "bfs from 2")}
-          </p>
-
           {isFetchImageAlgoSuccess ? (
-            <Image
-              width="600"
-              height="300"
-              src={AlgoResultImageLink}
-              alt="graph"
-            />
+            <img src={AlgoResultImageLink} alt="graph" />
           ) : (
+            // <></>
             <CircularIndeterminate />
           )}
+          {/*</div>*/}
         </div>
+        {/*</div>*/}
       </div>
     </div>
   );

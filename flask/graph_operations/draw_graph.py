@@ -22,7 +22,7 @@ def draw_graph(graph, filename):
     # edge weight labels
     edge_labels = nx.get_edge_attributes(graph, "weight")
     nx.draw_networkx_edge_labels(graph, pos, edge_labels)
-
+    plt.title(graph)
     ax = plt.gca()
     ax.margins(0.1)
     plt.axis("off")
