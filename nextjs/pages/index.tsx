@@ -1,13 +1,27 @@
 import styles from "../styles/Home.module.css";
 import * as React from "react";
 import { useState } from "react";
-import Image from "next/image";
 import { useQuery } from "react-query";
 import Button from "./components/Button";
 import Input from "./components/Input";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
 import CircularIndeterminate from "@/pages/components/CircularIndeterminate";
 
+enum SupportedAlgos {
+  bfs = "bfs",
+  dfs = "dfs",
+  prime = "prime",
+  kosaraju = "kosaraju",
+  dijkstra = "dijkstra",
+  bellmanFord = "bellmanFord",
+}
+interface GraphState {
+  nodes: Set<String>;
+  edges: Set<[String, String, String | undefined]>;
+  graphType: string;
+  algo: SupportedAlgos;
+  InputNodes: string;
+}
 const defaultGraphValues = {
   nodes: new Set<String>(["1", "2", "3", "4", "5"]),
   edges: new Set<[String, String, String?]>([
@@ -17,10 +31,21 @@ const defaultGraphValues = {
     ["2", "5"],
   ]),
   graphType: "directed",
-  algo: "bfs",
+  algo: SupportedAlgos.bfs,
   InputNodes: "2",
 };
 
+function isWeighted(
+  edges: Set<[String, String, (String | undefined)?]>
+): boolean {
+  let result = true;
+  edges.forEach((edge) => {
+    if (edge.length === 2) result = false;
+    return;
+  });
+
+  return result;
+}
 export default function Home(this: any) {
   const [graphState, setGraphState] = useState(() => defaultGraphValues);
 
@@ -114,13 +139,49 @@ export default function Home(this: any) {
     // NewEdges;
 
     await refetch();
+    await refetchAlgoImageLink();
   };
-  const submitHandler = async (InputNodes: string, inputAlgo: string) => {
+  const submitHandler = async (
+    inputNodes: string,
+    inputAlgo: SupportedAlgos
+  ) => {
     // console.log(Nodes)
+    // graph traversal to a node who doesn't exist
+    if (
+      (inputAlgo === SupportedAlgos.bfs ||
+        inputAlgo === SupportedAlgos.dfs ||
+        inputAlgo === SupportedAlgos.bellmanFord) &&
+      !graphState.nodes.has(inputAlgo)
+    ) {
+      alert(inputNodes + " doesn't exist in the nodes list");
+      return;
+    }
+
+    // alert(inputNodes);
+
+    if (inputAlgo === SupportedAlgos.dijkstra) {
+      inputNodes.split(",").forEach((node) => {
+        if (!graphState.nodes.has(node)) {
+          alert(node + " doesn't exist in the nodes list");
+          return;
+        }
+      });
+    }
+    // console.log(inputAlgo);
+
+    // MST can't be in a no weighted graph
+    if (
+      (inputAlgo === SupportedAlgos.prime ||
+        inputAlgo === SupportedAlgos.kosaraju) &&
+      !isWeighted(graphState.edges)
+    ) {
+      alert("the graph type should be weighted to run " + inputAlgo);
+      return;
+    }
 
     setGraphState((prevState) => {
       prevState.algo = inputAlgo;
-      prevState.InputNodes = InputNodes;
+      prevState.InputNodes = inputNodes;
       return prevState;
     });
 
@@ -154,6 +215,7 @@ export default function Home(this: any) {
                 return prevState;
               });
               await refetch();
+              await refetchAlgoImageLink();
             }}
             isDisabled={graphState.graphType === "directed"}
             message="Directed"
@@ -165,13 +227,31 @@ export default function Home(this: any) {
                 return prevState;
               });
               await refetch();
+              await refetchAlgoImageLink();
             }}
             isDisabled={graphState.graphType === "undirected"}
             message="Undirected"
           />
+
+          <Button
+            onClick={async function () {
+              await submitHandler("", SupportedAlgos.kosaraju);
+            }}
+            isDisabled={false}
+            message="kosaraju"
+          />
+          <Button
+            onClick={async function () {
+              await submitHandler("", SupportedAlgos.prime);
+            }}
+            isDisabled={false}
+            message="prime"
+          />
+
           <Button
             onClick={async function () {
               await refetch();
+              await refetchAlgoImageLink();
             }}
             isDisabled={false}
             message="Redraw"
@@ -180,14 +260,18 @@ export default function Home(this: any) {
         <div className={styles.controlButtons}>
           <Input
             disabled={isAlgoImageLoading}
-            onSubmit={(InputNodes) => submitHandler(InputNodes, "bfs")}
+            onSubmit={(InputNodes) =>
+              submitHandler(InputNodes, SupportedAlgos.bfs)
+            }
             message="BFS"
             placeHolder="start"
             regex="^\d+$|^[a-zA-Z]+$"
           />
           <Input
             disabled={isAlgoImageLoading}
-            onSubmit={(InputNodes) => submitHandler(InputNodes, "dfs")}
+            onSubmit={(InputNodes) =>
+              submitHandler(InputNodes, SupportedAlgos.dfs)
+            }
             message="DFS"
             placeHolder="start"
             regex="^\d+$|^[a-zA-Z]+$"
@@ -196,34 +280,39 @@ export default function Home(this: any) {
         <div className={styles.controlButtons}>
           <Input
             disabled={isAlgoImageLoading}
-            onSubmit={(InputNodes) => submitHandler(InputNodes, "dijkstra")}
+            onSubmit={(InputNodes) =>
+              submitHandler(InputNodes, SupportedAlgos.dijkstra)
+            }
             message="dijkstra"
             placeHolder="start,target"
-            regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
+            regex="^([a-zA-Z]|\d+$),[a-zA-Z]|\d+$)"
           />
           <Input
             disabled={isAlgoImageLoading}
-            onSubmit={(InputNodes) => submitHandler(InputNodes, "bellman ford")}
+            onSubmit={(InputNodes) =>
+              submitHandler(InputNodes, SupportedAlgos.bellmanFord)
+            }
             message="bellman-ford"
-            placeHolder="start:target"
-            regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
+            placeHolder="source"
+            regex="^\d+$|^[a-zA-Z]+$"
           />
         </div>
         <div className={styles.controlButtons}>
-          <Input
-            disabled={isAlgoImageLoading}
-            onSubmit={(InputNodes) => submitHandler(InputNodes, "kosaraju")}
-            message="kosaraju"
-            placeHolder="start:target"
-            regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
-          />
-          <Input
-            disabled={isAlgoImageLoading}
-            onSubmit={(InputNodes) => submitHandler(InputNodes, "prime")}
-            message="prime"
-            placeHolder="start:target"
-            regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"
-          />
+          {/*<Input*/}
+          {/*  disabled={isAlgoImageLoading}*/}
+          {/*  onSubmit={(InputNodes) => submitHandler(InputNodes, "kosaraju")}*/}
+          {/*  message="kosaraju"*/}
+          {/*  placeHolder="start:target"*/}
+          {/*  regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"*/}
+          {/*/>*/}
+
+          {/*<Input*/}
+          {/*  disabled={isAlgoImageLoading}*/}
+          {/*  onSubmit={(InputNodes) => submitHandler(InputNodes, "prime")}*/}
+          {/*  message="prime"*/}
+          {/*  placeHolder="start:target"*/}
+          {/*  regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"*/}
+          {/*/>*/}
         </div>
       </div>
       <div className={styles.graphContainer}>
