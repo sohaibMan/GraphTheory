@@ -8,7 +8,13 @@ def create_undirected_graph(nodes, edges):
     # add a node
     G.add_nodes_from(nodes)
     G = add_weighted_to_edges_if_exists(G, edges)
-    print(G.nodes)
+    return G
+
+
+def create_path_graph(nodes, edges):
+    # Create a graph
+    G = nx.path_graph(list(nodes))
+    G = add_weighted_to_edges_if_exists(G, edges)
     return G
 
 

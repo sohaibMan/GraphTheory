@@ -4,6 +4,8 @@
 import shutil
 import uuid
 import os
+
+import networkx as nx
 # graph helper imports
 from matplotlib import pyplot as plt
 # rest api imports
@@ -11,7 +13,7 @@ from flask import Flask, after_this_request, request, send_file
 
 from graph_operations.algo_router import algo_router
 # import helper functions
-from graph_operations.create_graph import create_undirected_graph, create_directed_graph
+from graph_operations.create_graph import create_undirected_graph, create_directed_graph, create_path_graph
 from graph_operations.draw_graph import draw_graph
 
 # the flask app should start with an empty temp directory called tmp_output
@@ -54,9 +56,11 @@ def create_graph():
     body = request.get_json()
     # extract the graph type from the query string
     graphType = request.args.get("graphType")
-
+    algo = request.args.get("algo")
     # check for the graph type (directed or undirected)
-    if graphType == "undirected":
+    if algo == "dijkstra":
+        G = create_path_graph(body["nodes"], body["edges"])
+    elif graphType == "undirected":
         G = create_undirected_graph(body["nodes"], body["edges"])
     elif graphType == "directed":
         G = create_directed_graph(body["nodes"], body["edges"])
@@ -64,12 +68,12 @@ def create_graph():
         return {"status": "error", "message": "Graph type not supported!"}
 
     # check for the algorithm
-    algo = request.args.get("algo")
+
     if algo:  # if the algo is present in the query string
-        try:
-            algo_router(G, algo, body)  # raise an exception on a bad input otherwise it will handle the algo
-        except Exception as e:
-            return {"status": "error", "message": str(e)}
+        # try:
+        algo_router(G, algo, body)  # raise an exception on a bad input otherwise it will handle the algo
+        # except Exception as e:
+        #     return {"status": "error", "message": str(e)}
 
     # generate a unique filename to save the graph
     filename = str(uuid.uuid4())

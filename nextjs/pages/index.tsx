@@ -2,12 +2,13 @@ import styles from "../styles/Home.module.css";
 import * as React from "react";
 import { useState } from "react";
 import { useQuery } from "react-query";
-import Button from "./components/Button";
-import Input from "./components/Input";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
-import CircularIndeterminate from "@/pages/components/CircularIndeterminate";
+import CircularIndeterminate from "@/components/CircularIndeterminate";
 
-enum SupportedAlgos {
+// @ts-ignore
+export enum SupportedAlgo {
   bfs = "bfs",
   dfs = "dfs",
   prime = "prime",
@@ -15,29 +16,31 @@ enum SupportedAlgos {
   dijkstra = "dijkstra",
   bellmanFord = "bellmanFord",
 }
-interface GraphState {
-  nodes: Set<String>;
-  edges: Set<[String, String, String | undefined]>;
+
+export interface GraphState {
+  nodes: Set<Number>;
+  edges: Set<[Number, Number, Number?]>;
   graphType: string;
-  algo: SupportedAlgos;
-  InputNodes: string;
+  algo: SupportedAlgo;
+  start: Number;
+  target: Number;
 }
-const defaultGraphValues = {
-  nodes: new Set<String>(["1", "2", "3", "4", "5"]),
-  edges: new Set<[String, String, String?]>([
-    ["1", "2"],
-    ["1", "3"],
-    ["2", "4"],
-    ["2", "5"],
+const defaultGraphValues: GraphState = {
+  nodes: new Set<Number>([1, 2, 3, 4, 5]),
+  edges: new Set<[Number, Number, Number?]>([
+    [1, 2],
+    [1, 3],
+    [2, 4],
+    [2, 5],
   ]),
   graphType: "directed",
-  algo: SupportedAlgos.bfs,
-  InputNodes: "2",
+  algo: SupportedAlgo.bfs,
+  // InputNodes: "2",
+  start: 2,
+  target: 1,
 };
 
-function isWeighted(
-  edges: Set<[String, String, (String | undefined)?]>
-): boolean {
+function isWeighted(edges: Set<[Number, Number, Number?]>): boolean {
   let result = true;
   edges.forEach((edge) => {
     if (edge.length === 2) result = false;
@@ -46,6 +49,7 @@ function isWeighted(
 
   return result;
 }
+
 export default function Home(this: any) {
   const [graphState, setGraphState] = useState(() => defaultGraphValues);
 
@@ -84,7 +88,10 @@ export default function Home(this: any) {
   let rawAlgo = JSON.stringify({
     nodes: Array.from(graphState.nodes),
     edges: Array.from(graphState.edges),
-    start: graphState.InputNodes,
+    start: graphState.start,
+    target: graphState.target,
+    // start: +graphState.InputNodes.split(",")[0],
+    // target: +graphState.InputNodes.split(",")[1],
   });
 
   let requestOptionsAlgo: RequestInit = {
@@ -100,7 +107,7 @@ export default function Home(this: any) {
     refetch: refetchAlgoImageLink,
     isLoading: isAlgoImageLoading,
   } = useQuery(
-    ["algoResult", graphState.algo, graphState.InputNodes],
+    ["algoResult", graphState.algo, graphState.start, graphState.target],
     () =>
       fetch(
         `http://${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_PORT}/api/graph?graphType=${graphState.graphType}&algo=${graphState.algo}`,
@@ -115,18 +122,19 @@ export default function Home(this: any) {
   const changeHandler = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const input = e.target.value;
     const lines = input.split("\n");
-    const nodes = new Set<String>();
-    const edges = new Set<[String, String, String?]>();
+    const nodes = new Set<Number>();
+    const edges = new Set<[Number, Number, Number?]>();
     lines.forEach((line) => {
-      line.split(" ")[0] && nodes.add(line.split(" ")[0]);
+      line.split(" ")[0] && nodes.add(+line.split(" ")[0]);
+      line.split(" ")[1] && nodes.add(+line.split(" ")[1]);
       if (line.split(" ")[1]) {
         line.split(" ")[2]
           ? edges.add([
-              line.split(" ")[0],
-              line.split(" ")[1],
-              line.split(" ")[2],
+              +line.split(" ")[0],
+              +line.split(" ")[1],
+              +line.split(" ")[2],
             ])
-          : edges.add([line.split(" ")[0], line.split(" ")[1]]);
+          : edges.add([+line.split(" ")[0], +line.split(" ")[1]]);
       }
     });
 
@@ -143,15 +151,15 @@ export default function Home(this: any) {
   };
   const submitHandler = async (
     inputNodes: string,
-    inputAlgo: SupportedAlgos
+    inputAlgo: SupportedAlgo
   ) => {
     // console.log(Nodes)
     // graph traversal to a node who doesn't exist
     if (
-      (inputAlgo === SupportedAlgos.bfs ||
-        inputAlgo === SupportedAlgos.dfs ||
-        inputAlgo === SupportedAlgos.bellmanFord) &&
-      !graphState.nodes.has(inputAlgo)
+      (inputAlgo === SupportedAlgo.bfs ||
+        inputAlgo === SupportedAlgo.dfs ||
+        inputAlgo === SupportedAlgo.bellmanFord) &&
+      !graphState.nodes.has(+inputNodes.split(",")[0])
     ) {
       alert(inputNodes + " doesn't exist in the nodes list");
       return;
@@ -159,9 +167,13 @@ export default function Home(this: any) {
 
     // alert(inputNodes);
 
-    if (inputAlgo === SupportedAlgos.dijkstra) {
+    if (inputAlgo === SupportedAlgo.dijkstra && !isWeighted(graphState.edges)) {
+      alert("To determine the shortest path your graph should be weighted");
+      return;
+    }
+    if (inputAlgo === SupportedAlgo.dijkstra) {
       inputNodes.split(",").forEach((node) => {
-        if (!graphState.nodes.has(node)) {
+        if (!graphState.nodes.has(+node)) {
           alert(node + " doesn't exist in the nodes list");
           return;
         }
@@ -170,18 +182,20 @@ export default function Home(this: any) {
     // console.log(inputAlgo);
 
     // MST can't be in a no weighted graph
-    if (
-      (inputAlgo === SupportedAlgos.prime ||
-        inputAlgo === SupportedAlgos.kosaraju) &&
-      !isWeighted(graphState.edges)
-    ) {
-      alert("the graph type should be weighted to run " + inputAlgo);
-      return;
-    }
+    // if (
+    //   (inputAlgo === SupportedAlgo.prime ||
+    //     inputAlgo === SupportedAlgo.kosaraju) &&
+    //   !isWeighted(graphState.edges)
+    // ) {
+    //   alert("the graph type should be weighted to run " + inputAlgo);
+    //   return;
+    // }
 
     setGraphState((prevState) => {
       prevState.algo = inputAlgo;
-      prevState.InputNodes = inputNodes;
+      // prevState.InputNodes = inputNodes;
+      prevState.start = +inputNodes.split(",")[0];
+      prevState.target = +inputNodes.split(",")[1];
       return prevState;
     });
 
@@ -235,14 +249,14 @@ export default function Home(this: any) {
 
           <Button
             onClick={async function () {
-              await submitHandler("", SupportedAlgos.kosaraju);
+              await submitHandler("", SupportedAlgo.kosaraju);
             }}
             isDisabled={false}
             message="kosaraju"
           />
           <Button
             onClick={async function () {
-              await submitHandler("", SupportedAlgos.prime);
+              await submitHandler("", SupportedAlgo.prime);
             }}
             isDisabled={false}
             message="prime"
@@ -261,27 +275,27 @@ export default function Home(this: any) {
           <Input
             disabled={isAlgoImageLoading}
             onSubmit={(InputNodes) =>
-              submitHandler(InputNodes, SupportedAlgos.bfs)
+              submitHandler(InputNodes, SupportedAlgo.bfs)
             }
             message="BFS"
             placeHolder="start"
-            regex="^\d+$|^[a-zA-Z]+$"
+            regex="^\d+$"
           />
           <Input
             disabled={isAlgoImageLoading}
             onSubmit={(InputNodes) =>
-              submitHandler(InputNodes, SupportedAlgos.dfs)
+              submitHandler(InputNodes, SupportedAlgo.dfs)
             }
             message="DFS"
             placeHolder="start"
-            regex="^\d+$|^[a-zA-Z]+$"
+            regex="^\d+$"
           />
         </div>
         <div className={styles.controlButtons}>
           <Input
             disabled={isAlgoImageLoading}
             onSubmit={(InputNodes) =>
-              submitHandler(InputNodes, SupportedAlgos.dijkstra)
+              submitHandler(InputNodes, SupportedAlgo.dijkstra)
             }
             message="dijkstra"
             placeHolder="start,target"
@@ -290,29 +304,12 @@ export default function Home(this: any) {
           <Input
             disabled={isAlgoImageLoading}
             onSubmit={(InputNodes) =>
-              submitHandler(InputNodes, SupportedAlgos.bellmanFord)
+              submitHandler(InputNodes, SupportedAlgo.bellmanFord)
             }
             message="bellman-ford"
             placeHolder="source"
-            regex="^\d+$|^[a-zA-Z]+$"
+            regex="^\d+$"
           />
-        </div>
-        <div className={styles.controlButtons}>
-          {/*<Input*/}
-          {/*  disabled={isAlgoImageLoading}*/}
-          {/*  onSubmit={(InputNodes) => submitHandler(InputNodes, "kosaraju")}*/}
-          {/*  message="kosaraju"*/}
-          {/*  placeHolder="start:target"*/}
-          {/*  regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"*/}
-          {/*/>*/}
-
-          {/*<Input*/}
-          {/*  disabled={isAlgoImageLoading}*/}
-          {/*  onSubmit={(InputNodes) => submitHandler(InputNodes, "prime")}*/}
-          {/*  message="prime"*/}
-          {/*  placeHolder="start:target"*/}
-          {/*  regex="^([a-zA-Z]|[0-9]),([a-zA-Z]|[0-9])$"*/}
-          {/*/>*/}
         </div>
       </div>
       <div className={styles.graphContainer}>

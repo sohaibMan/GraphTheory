@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "pages/components/tawl.min.js"
+    "pages/Components/tawl.min.js"
   ],
   "exclude": ["node_modules"]
 }

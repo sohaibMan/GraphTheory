@@ -14,7 +14,7 @@ def draw_graph(graph, filename):
     # edges
     nx.draw_networkx_edges(graph, pos, width=5)
     nx.draw_networkx_edges(
-        graph, pos, width=5, edge_color="#d35400", arrowsize=15
+        graph, pos, width=5, edge_color="#d35400", arrowsize=15, arrows=True
     )
 
     # node labels
