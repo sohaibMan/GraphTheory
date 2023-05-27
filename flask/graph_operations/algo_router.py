@@ -1,8 +1,8 @@
 import networkx as nx
 
+from algorithms.bellman_ford_path import dijkstra_path
 from algorithms.breadth_first_search import bfs_edges
 from algorithms.depth_first_search import dfs_edges
-from algorithms.dijkstra import dijkstra_path
 
 
 # from algorithms.dijkstra import dijkstra_path
@@ -19,6 +19,9 @@ def algo_router(graph, algo, body):
             out_put = list(dfs_edges(graph, body["start"]))
         case "dijkstra":
             path = dijkstra_path(graph, body["start"], body["target"], weight="weight")
+            # todo do the dijkstra_path that has one start and returns the path
+            # path = single_source_shortest_path(graph, body["start"])
+            # print(path)
             out_put = list(zip(path, path[1:]))
         case "bellmanFord":
             out_put = list(nx.single_source_bellman_ford(graph, body["start"], weight="weight"))

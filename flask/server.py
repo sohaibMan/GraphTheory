@@ -54,6 +54,7 @@ def create_graph():
 
     # extract the request body
     body = request.get_json()
+    print(body)
     # extract the graph type from the query string
     graphType = request.args.get("graphType")
     algo = request.args.get("algo")
