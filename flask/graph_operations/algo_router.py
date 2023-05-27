@@ -1,8 +1,8 @@
 import networkx as nx
 
-from algorithms.bellman_ford_path import dijkstra_path
 from algorithms.breadth_first_search import bfs_edges
 from algorithms.depth_first_search import dfs_edges
+from algorithms.dijkstra import dijkstra_path
 
 
 # from algorithms.dijkstra import dijkstra_path
@@ -10,7 +10,6 @@ from algorithms.depth_first_search import dfs_edges
 
 
 def algo_router(graph, algo, body):
-    print(algo)
     out_put = None
     match algo:
         case "bfs":
@@ -18,11 +17,12 @@ def algo_router(graph, algo, body):
         case "dfs":
             out_put = list(dfs_edges(graph, body["start"]))
         case "dijkstra":
-            path = dijkstra_path(graph, body["start"], body["target"], weight="weight")
-            # todo do the dijkstra_path that has one start and returns the path
-            # path = single_source_shortest_path(graph, body["start"])
-            # print(path)
-            out_put = list(zip(path, path[1:]))
+            try:
+                path = dijkstra_path(graph, body["start"], body["target"], weight="weight")
+                out_put = list(zip(path, path[1:]))
+            except nx.NetworkXNoPath:
+                # No path to {target} from {start}
+                out_put = []
         case "bellmanFord":
             out_put = list(nx.single_source_bellman_ford(graph, body["start"], weight="weight"))
 
@@ -33,9 +33,17 @@ def algo_router(graph, algo, body):
             out_put = max(nx.kosaraju_strongly_connected_components(graph), key=len)
         case "prime":
             out_put = nx.minimum_spanning_edges(graph)
-        # case _:
-        #     raise {"status": "error", "message": "Algorithm not supported!"}
+        case _:
+            raise {"status": "error", "message": "Algorithm not supported!"}
     # clearing the original graph to draw another graph
     graph.clear()
-    graph.add_edges_from(out_put)
+    # add weighted edges to the graph
+    # the body["edges"] is a list [start, end, weight] and the wight is optional
+    # the output is a list of tuples [(start, end)]
+    for edge in body["edges"]:
+        if tuple(edge[0:2]) in out_put:
+            if len(edge) == 2:
+                graph.add_edge(edge[0], edge[1])
+            else:
+                graph.add_weighted_edges_from([edge])
     return graph

@@ -111,12 +111,15 @@ export default function Home(this: any) {
             return;
         }
         if (algo === SupportedAlgo.dijkstra) {
+            let nodeExists = true;
             inputNodes.split(",").forEach((node) => {
                 if (!graphState.nodes.has(node)) {
+                    nodeExists = false;
                     alert(node + " doesn't exist in the nodes list");
-                    return;
                 }
             });
+
+            if (!nodeExists) return;
         }
         // console.log(algo);
 
@@ -229,7 +232,7 @@ export default function Home(this: any) {
                         }
                         message="dijkstra"
                         placeHolder="start,target"
-                        regex="^([a-zA-Z]|\d+$),[a-zA-Z]|\d+$)"
+                        regex="^([a-zA-Z0-9]+(?:,[a-zA-Z0-9]+)+)$"
                     />
                     <Input
                         disabled={isAlgoImageLoading}

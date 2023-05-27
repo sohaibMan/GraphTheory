@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 
+import os
 # system imports
 import shutil
 import uuid
-import os
 
-import networkx as nx
-# graph helper imports
-from matplotlib import pyplot as plt
 # rest api imports
 from flask import Flask, after_this_request, request, send_file
+# graph helper imports
+from matplotlib import pyplot as plt
 
 from graph_operations.algo_router import algo_router
 # import helper functions
-from graph_operations.create_graph import create_undirected_graph, create_directed_graph, create_path_graph
+from graph_operations.create_graph import create_undirected_graph, create_directed_graph
 from graph_operations.draw_graph import draw_graph
 
 # the flask app should start with an empty temp directory called tmp_output
@@ -54,14 +53,11 @@ def create_graph():
 
     # extract the request body
     body = request.get_json()
-    print(body)
     # extract the graph type from the query string
     graphType = request.args.get("graphType")
     algo = request.args.get("algo")
     # check for the graph type (directed or undirected)
-    if algo == "dijkstra":
-        G = create_path_graph(body["nodes"], body["edges"])
-    elif graphType == "undirected":
+    if graphType == "undirected":
         G = create_undirected_graph(body["nodes"], body["edges"])
     elif graphType == "directed":
         G = create_directed_graph(body["nodes"], body["edges"])
