@@ -11,7 +11,7 @@ import {defaultGraphValues, isWeighted, makeAlgoRequestOptions, makeRequestOptio
 import {TextArea} from "@/pages/components/textArea";
 
 
-export default function Home(this: any) {
+export default function Home() {
 
     // to store the graph state
     const [graphState, setGraphState] = useState(() => defaultGraphValues);
@@ -121,17 +121,25 @@ export default function Home(this: any) {
 
             if (!nodeExists) return;
         }
-        // console.log(algo);
 
-        // MST can't be in a no weighted graph
-        // if (
-        //   (algo === SupportedAlgo.prime ||
-        //     algo === SupportedAlgo.kosaraju) &&
-        //   !isWeighted(graphState.edges)
-        // ) {
-        //   alert("the graph type should be weighted to run " + algo);
-        //   return;
-        // }
+        // MST can't be in a no weighted graph or directed
+        if (
+            algo === SupportedAlgo.prime &&
+            (graphState.graphType === "directed" ||
+                !isWeighted(graphState.edges))
+        ) {
+            alert("the graph  should be undirected and weighted to run " + algo);
+            return;
+        }
+
+        if (
+            algo === SupportedAlgo.bellmanFord &&
+            !isWeighted(graphState.edges)
+        ) {
+            alert("the graph  should be  weighted to run " + algo);
+            return;
+        }
+
 
         setGraphState((prevState) => {
             prevState.algo = algo;
@@ -212,7 +220,7 @@ export default function Home(this: any) {
                         }
                         message="BFS"
                         placeHolder="start"
-                        regex="([a-zA-Z]|\d+$),[a-zA-Z]|\d+$)"
+                        regex="[A-Za-z0-9]+"
                     />
                     <Input
                         disabled={isAlgoImageLoading}
@@ -221,7 +229,7 @@ export default function Home(this: any) {
                         }
                         message="DFS"
                         placeHolder="start"
-                        regex="([a-zA-Z]|\d+$),[a-zA-Z]|\d+$)"
+                        regex="[A-Za-z0-9]+"
                     />
                 </div>
                 <div className={styles.controlButtons}>
@@ -241,7 +249,7 @@ export default function Home(this: any) {
                         }
                         message="bellman-ford"
                         placeHolder="source"
-                        regex="^\d+$"
+                        regex="^[A-Za-z0-9]+"
                     />
                 </div>
             </div>
