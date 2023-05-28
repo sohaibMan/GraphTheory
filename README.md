@@ -1,6 +1,6 @@
-# Théorie des graphes
+# Theorie des graphes
 
-## À quoi sert cette l'application ?
+# À quoi sert cette l'application ?
 
    Cette application est faite pour rendre votre vie plus facile lorsque vous traitez des graph et des algorithmes sur des graphs, il couvre une variété d’algorithmes tels que BFS  DFS Dijkstra Prime Kosaraju bellman-ford, et il vous donne le résultat d’un algorithme sur un graph sous forme d’un grpah
 
@@ -12,24 +12,27 @@
 
    Cette application est une application web réalisée avec l’architecture REST ( client ,serveur) avec Flask (Python) + Networkx (pour la gestion des graphs)+ Matplotlib(Dessin des graphs) en back end et NextJs + React  +TypeScript + Regex (valider l’entrée utilisateur) + React Query (gestion de l’état de l’application) pour le front end et le docker pour le déploiement 
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled.png)
 
-## Comment l’installer ?
+# Comment l’installer ?
 
 ```bash
 git clone https://github.com/sohaibMan/GraphTheory.git
 
 cd GraphTheory
 
+####################################
 ## for docker users
+####################################
 docker compose up
 ## to stop it 
 docker compose down
 ## to build it
 docker compose up --build
 
+####################################
 ## to runt locally without docker(if you don't have docker installed)
-
+####################################
 ## install the dependencies (front end)
 cd nextjs && npm i 
 ## install the dependencies (backend end)
@@ -43,27 +46,27 @@ cd ../next && npm run dev
 ## now open http://localhost:3000 in your browser
 ```
 
-## Comment utiliser l'application ?
+# Comment utiliser l'application ?
 
     Cette application est conviviale et très simple à utiliser , il suffit de suivre ces étapes pour l’utiliser
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%201.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%201.png)
 
-1- D**essiner pour voir votre graphique**
+1- **Dessiner pour voir votre graphique**
 
 vous avez cette zone de texte pour taper vos bords et nœuds de graphique dans ce format
 
 noeud arête le poids (poids est facultatif)
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%202.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%202.png)
 
-Example :
+**Example :**
 
 - **A B 2** sera  interprété comme on a 2 noeuds A  et B et un arrete A→ B de poids 2 (avec ordre)
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%203.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%203.png)
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%204.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%204.png)
 
 - 1
     
@@ -74,35 +77,35 @@ Example :
      sera  interprété  comma on a 3 noeuds 1 2 3 
     
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%205.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%205.png)
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%206.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%206.png)
 
 2- choisir un algorithme pour l’appliquer et saisir les valeurs requises
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%207.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%207.png)
 
 **Astuces:**
 
 - Pour Changer l’orientation du graph clicker sur l’un des buttons:
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%208.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%208.png)
 
 - si le graph n’est pas bien dessiné, vous pouvez le redessiner à l’aide de ce bouton
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%209.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%209.png)
 
 ## E**xample de l’algorithme de Dijkstra :**
 
 **Definition:** L’algorithme de Dijkstra est un algorithme pour trouver les chemins les plus courts entre les nœuds dans un graphique pondéré
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2010.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2010.png)
 
-Les Etapes :
+**Les Etapes :**
 
-1. Représentation graphique sous forme d'une liste
+1. **Représentation graphique sous forme d'une liste**
 
-Notes : Nous supposons que le nœud A est 1 B est 2 et vice versa
+**Notes** : Nous supposons que le nœud A est 1 B est 2 et vice versa
 
 ```
 A B 7 
@@ -118,17 +121,17 @@ F E 3
 
 ```
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2011.png)
+**L’interface**
 
-L” interface
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2011.png)
 
 1. le choix d’un nœud de départ et noe d'extrémité 
 
 **Exemple: A,D** 
 
-![a5c76267-cb91-4b88-950e-b1b1dbd01993.png](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/a5c76267-cb91-4b88-950e-b1b1dbd01993.png)
+![a5c76267-cb91-4b88-950e-b1b1dbd01993.png](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/a5c76267-cb91-4b88-950e-b1b1dbd01993.png)
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2012.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2012.png)
 
 **Explication:**
 
@@ -136,15 +139,15 @@ L” interface
 
 **Exemple:** E,F
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2013.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2013.png)
 
 **Explication:**
 
 - le chemin le plus court entre E et F est E→B→F avec le cout total 3
 
-Exemple : D,A
+**Exemple** : D,A
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2014.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2014.png)
 
 **Explication:**
 
@@ -164,27 +167,27 @@ B E
 C A
 ```
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2015.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2015.png)
 
 **Exemple BFS a partier de A**
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2016.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2016.png)
 
 **Exemple BFS a partier de E**
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2017.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2017.png)
 
 **Exemple DFS a partier de D**
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2018.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2018.png)
 
 **Exemple DFS a partier de C**
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2019.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2019.png)
 
 ## **Example de l’algorithme de prime:**
 
-pronouns par exemple le graph suivante: (graph simple  not orienté pondéré)
+   pronouns par exemple le graph suivante: (graph simple  not orienté pondéré)
 
 ```
 
@@ -199,23 +202,23 @@ pronouns par exemple le graph suivante: (graph simple  not orienté pondéré)
 7 2 14
 ```
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2020.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2020.png)
 
 **Explication:** en arrière-plan, l’algorithme fait les prochaines étapes
 
-![prims-algorithm-java.png](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/prims-algorithm-java.png)
+![prims-algorithm-java.png](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/prims-algorithm-java.png)
 
 ## **Example de l’algorithme de kosarajus:**
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2021.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2021.png)
 
 **Explication:**
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2022.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2022.png)
 
 ## **Example de l’algorithme de** *bellman Ford:*
 
-Example :
+**Example :**
 
 ```
 0 1 1
@@ -231,8 +234,8 @@ Example :
 
 *source=0*
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2023.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2023.png)
 
 **Explication:**
 
-![Untitled](The%CC%81orie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2024.png)
+![Untitled](Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2024.png)

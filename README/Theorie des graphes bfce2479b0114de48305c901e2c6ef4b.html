@@ -1,0 +1,758 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Theorie des graphes</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="bfce2479-b011-4de4-8305-c901e2c6ef4b" class="page sans"><header><h1 class="page-title"><a href="https://fr.wikipedia.org/wiki/Th%C3%A9orie_des_graphes"><strong>Theorie des graphes</strong></a></h1><p class="page-description"></p></header><div class="page-body"><p id="abd9c9f1-fb5e-4e3e-beb7-5d10b2c6ddff" class="">
+</p><p id="68132820-2151-4645-8fd2-c1dfdf3c495e" class="">
+</p><h1 id="9b1ade39-c661-42b8-8f54-b2936bf2456d" class="">À quoi sert cette l&#x27;application ?</h1><p id="9fe960a3-9ed1-4522-8387-50e41344586e" class="">   Cette application est faite pour rendre votre vie plus facile lorsque vous traitez des graph et des algorithmes sur des graphs, il couvre une variété d’algorithmes tels que BFS  DFS Dijkstra Prime Kosaraju bellman-ford, et il vous donne le résultat d’un algorithme sur un graph sous forme d’un grpah</p><p id="047c63e2-526e-45ed-8313-54bddd0880a2" class="">
+</p><p id="f59c7381-df42-4b0d-b43a-0eadc1f418c6" class=""><a href="https://github.com/sohaibMan/GraphTheory.git"><strong>Code Source: </strong></a></p><figure id="4af7a481-3fac-4eb9-88ca-5600a514fba9"><a href="https://github.com/sohaibMan/GraphTheory.git" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">GitHub - sohaibMan/GraphTheory: Graph theory is the study of graphs that concerns with the relationship among edges and vertice, and in this project I have implement a various number of algorithmes such as bfs dfs dijkestra ... and I made a UI to interacte with them</div><div class="bookmark-description">Graph theory is the study of graphs that concerns with the relationship among edges and vertice, and in this project I have implement a various number of algorithmes such as bfs dfs dijkestra ... a...</div></div><div class="bookmark-href"><img src="https://github.com/fluidicon.png" class="icon bookmark-icon"/>https://github.com/sohaibMan/GraphTheory.git</div></div><img src="https://opengraph.githubassets.com/815de2756d7e2a1ca81699a0c1ca8751c3f5b25e4ebccf9b0c03e955ae3ea21f/sohaibMan/GraphTheory" class="bookmark-image"/></a></figure><p id="d8499599-27e9-478b-90e8-f45a9bb11439" class="">
+</p><h1 id="f62dd8bf-1953-49d9-8866-0efda720fe4b" class="">Comment ça marche ? </h1><p id="cf2fcbce-93b3-4138-b907-33a1ff04e022" class="">   Cette application est une application web réalisée avec l’architecture REST ( client ,serveur) avec Flask (Python) + Networkx (pour la gestion des graphs)+ Matplotlib(Dessin des graphs) en back end et NextJs + React  +TypeScript + Regex (valider l’entrée utilisateur) + React Query (gestion de l’état de l’application) pour le front end et le docker pour le déploiement </p><figure id="58f9938c-67cf-41a3-84ff-a7df8da51838" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled.png"><img style="width:761px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled.png"/></a></figure><p id="cf187674-4c41-4482-9fab-b4a35ae939f5" class="">
+</p><h1 id="18c44e5c-d563-4056-8869-d04cd1841896" class="">Comment l’installer ? </h1><pre id="f107ea50-6bd7-441a-8dd5-fb0d77294352" class="code"><code>git clone https://github.com/sohaibMan/GraphTheory.git
+
+cd GraphTheory
+
+
+####################################
+## for docker users
+####################################
+docker compose up
+## to stop it 
+docker compose down
+## to build it
+docker compose up --build
+
+####################################
+## to runt locally without docker(if you don&#x27;t have docker installed)
+####################################
+## install the dependencies (front end)
+cd nextjs &amp;&amp; npm i 
+## install the dependencies (backend end)
+cd ../flask &amp;&amp; pip3 install -r requirements.txt
+## note if u run on linux you need to give the app permission to write and read and delete to tmp_output folder if needed
+chmod 770 tmp_output 
+## run the back end
+python3 server.py
+## run the front end
+cd ../next &amp;&amp; npm run dev
+## now open http://localhost:3000 in your browser</code></pre><h1 id="c50a467c-d386-483b-b171-3f3e038a9410" class="">Comment utiliser l&#x27;application ?</h1><p id="41926db3-ffda-4574-87bd-9b56cbf9e495" class="">    Cette application est conviviale et très simple à utiliser , il suffit de suivre ces étapes pour l’utiliser</p><figure id="e12f8755-0fa8-4e4a-b594-7028b7bc35c4" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%201.png"><img style="width:761px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%201.png"/></a></figure><p id="56bd9596-6ca6-4321-91b2-4974570db141" class="">1- <strong>Dessiner pour voir votre graphique</strong><div class="indented"><p id="3fc19778-d7df-44e9-acb9-cff79718d5df" class="">vous avez cette zone de texte pour taper vos bords et nœuds de graphique dans ce format</p><p id="aa311599-81bc-437b-8a3b-53d29e402510" class="">noeud arête le poids (poids est facultatif)</p></div></p><figure id="8d6da758-dcd3-4d2a-9f56-2a78fcfad892" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%202.png"><img style="width:472px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%202.png"/></a></figure><p id="b16aa0a0-f64d-4a9d-b238-496ff135d88e" class=""><strong>Example :</strong></p><ul id="350be52a-7b94-4f5d-8170-15eac66dc511" class="bulleted-list"><li style="list-style-type:disc"><strong>A B 2</strong> sera  interprété comme on a 2 noeuds A  et B et un arrete A→ B de poids 2 (avec ordre)</li></ul><div id="83daab8a-ca88-4923-8a06-3d6656ea7cb2" class="column-list"><div id="2e2c79fe-764b-408e-a09c-0590f7e7ac32" style="width:50.000000000000014%" class="column"><figure id="d08d098e-b7fd-405f-9254-06ca11356853" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%203.png"><img style="width:288px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%203.png"/></a></figure></div><div id="4868060f-9584-410d-a0ca-a54dac24fa9d" style="width:50%" class="column"><figure id="21569536-4351-477d-962c-7ed759a2f602" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%204.png"><img style="width:336px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%204.png"/></a></figure><p id="8c380833-f0fa-4561-83e4-317fbabeb828" class="">
+</p></div></div><ul id="3ea304eb-25f7-4ff7-a2ca-d828b91cccff" class="bulleted-list"><li style="list-style-type:disc">1 <p id="d431fee1-e5ef-4753-83ad-b7d9f7af52e6" class="">2 </p><p id="a0cc8bb2-0cb4-4fa9-922b-b584324581b9" class="">3</p><p id="5d5f9d1b-0751-4f51-b228-9f8dfe159c9e" class=""> sera  interprété  comma on a 3 noeuds 1 2 3 </p><p id="8e754fb5-cdcb-4680-9d13-d347584e7f35" class="">
+</p></li></ul><div id="8783cc30-8fb3-4a78-9ec5-b057b5adf013" class="column-list"><div id="bacc1dab-cff6-41c9-8221-058d00eca2ad" style="width:50%" class="column"><figure id="d29cb3bc-9acf-4e1f-b786-efab14dca726" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%205.png"><img style="width:432px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%205.png"/></a></figure></div><div id="7c8094ee-b05b-4bf1-8f54-da3e699b2680" style="width:50%" class="column"><figure id="570a1695-4baa-48be-9848-4a84d4c921b8" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%206.png"><img style="width:384px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%206.png"/></a></figure></div></div><p id="05cf6468-ebb1-4a5a-aa51-5ac323821a64" class="">2- choisir un algorithme pour l’appliquer et saisir les valeurs requises</p><figure id="9d4d47fb-6d67-4cb0-bd21-070babad40eb" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%207.png"><img style="width:489px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%207.png"/></a></figure><p id="50b6af10-413e-4a0f-a799-3ac76e3fedd6" class=""><strong>Astuces:</strong></p><ul id="edc1364b-f4c6-40e3-8d6f-560cbff190dd" class="bulleted-list"><li style="list-style-type:disc">Pour Changer l’orientation du graph clicker sur l’un des buttons: </li></ul><figure id="b5ec8cdd-cefc-4573-b491-1ef5929fdde1" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%208.png"><img style="width:147px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%208.png"/></a></figure><ul id="60b7ff2d-cef3-42c6-819a-d6a1ab856d62" class="bulleted-list"><li style="list-style-type:disc">si le graph n’est pas bien dessiné, vous pouvez le redessiner à l’aide de ce bouton</li></ul><figure id="3636fe3b-7232-40a8-b972-62db6a1e7f37" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%209.png"><img style="width:96px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%209.png"/></a></figure><h2 id="b86174b6-e67a-4054-bdb5-22ee3e7b458d" class="">E<strong>xample de l’algorithme de Dijkstra : </strong></h2><p id="2c49f368-de52-4280-b4d5-abf5c1e356e0" class="">
+</p><p id="eddf8c04-fc60-44e0-965a-e2df1a6fabc0" class=""><strong>Definition: </strong>L’algorithme de Dijkstra est un algorithme pour trouver les chemins les plus courts entre les nœuds dans un graphique pondéré</p><figure id="9de426fe-d9b4-4107-8a65-7b837f6d0761" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2010.png"><img style="width:1258px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2010.png"/></a></figure><p id="6b7fe7c3-8b17-481b-af80-a1a5a3abb124" class=""><strong>Les Etapes :</strong></p><ol type="1" id="f9dfd529-041b-4c17-995f-31f9fd8c29ea" class="numbered-list" start="1"><li><strong>Représentation graphique sous forme d&#x27;une liste</strong></li></ol><p id="6c70c6a9-5f94-4a99-9d11-8851dc05d862" class=""><strong>Notes</strong> : Nous supposons que le nœud A est 1 B est 2 et vice versa</p><pre id="cca5c6f0-0b79-42fa-b3ae-078ffeee4a3f" class="code"><code>A B 7 
+A C 1
+B D 4
+B F 1
+C B 5
+C E 2
+C F 7
+E D 5
+E B 2
+F E 3
+</code></pre><div id="06354c25-77c6-486f-8224-3a699d4a0415" class="column-list"><div id="97884faf-545c-4ad0-bb5c-37a80cc61707" style="width:50%" class="column"><p id="5b2f266d-014d-44f9-b055-43b331a22663" class=""><strong>L’interface</strong></p><figure id="27b03770-7055-4008-9863-4907565ba570" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2011.png"><img style="width:336px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2011.png"/></a></figure><p id="deb60228-0843-4aa2-8ab4-7d11738ea96a" class="">
+</p><p id="679e8135-8256-47db-acef-eab8ce8b19f4" class="">
+</p><ol type="1" id="bb0f9fc8-6ff7-4a19-9a0f-d09f00ced424" class="numbered-list" start="2"><li>le choix d’un nœud de départ et noe d&#x27;extrémité </li></ol><p id="3e037d9f-3598-4588-85fd-6a25c46dc70b" class="">
+</p><p id="06562cf2-0b01-424c-a063-c475547032f5" class=""><strong>Exemple: A,D </strong></p></div><div id="409b2a29-7de7-4054-a0d7-eb4c749fcb7b" style="width:50%" class="column"><figure id="88383394-9b95-4841-b506-8255899b7d91" class="image" style="text-align:right"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/a5c76267-cb91-4b88-950e-b1b1dbd01993.png"><img style="width:640px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/a5c76267-cb91-4b88-950e-b1b1dbd01993.png"/></a></figure><p id="1a15037d-83fd-4335-afba-ba40ffd90deb" class="">
+</p></div></div><figure id="0bf6c21e-9903-48b3-b640-28fd2cf6d807" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2012.png"><img style="width:672px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2012.png"/></a></figure><p id="29288a7a-a8ba-4f9b-b6a4-f5dfbe980e50" class=""><strong>Explication:</strong></p><ul id="86bc4541-4dae-4ccc-bcf8-1cef4d7865cb" class="bulleted-list"><li style="list-style-type:disc">le chemin le plus court entre A et D est A→C→E→D avec le cout total 8</li></ul><p id="06ad7c3a-3545-46ce-bd23-98c14b681ac6" class="">
+</p><p id="2c0c43de-deed-452c-84e4-f60b6d6197fe" class=""><strong>Exemple: </strong>E,F</p><figure id="c8828a4b-90ca-4450-904d-e40464c64d38" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2013.png"><img style="width:1021px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2013.png"/></a></figure><p id="01b72020-6d7a-4289-bbd5-9170cd9c9823" class=""><strong>Explication:</strong></p><ul id="82352154-8fb7-4a2b-afc2-ebe8b1024618" class="bulleted-list"><li style="list-style-type:disc">le chemin le plus court entre E et F est E→B→F avec le cout total 3</li></ul><p id="9fa764d5-4c94-4b10-bc3a-f98cd858b1e0" class="">
+</p><p id="10dea26a-f2f4-4fc5-b612-ee08ee5b883f" class=""><strong>Exemple</strong> : D,A</p><figure id="21f8883c-c4cd-44e6-a984-7d2f8698071f" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2014.png"><img style="width:1021px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2014.png"/></a></figure><p id="283d5cd0-fefe-4aa2-9ef4-b277cfde41cf" class=""><strong>Explication:</strong></p><ul id="ecf00a80-8a3e-4952-86bb-4737e04674e7" class="bulleted-list"><li style="list-style-type:disc">il ya pas de chmen entre D  et A</li></ul><p id="8d0734c4-c06e-449f-a266-9931ad2ef863" class="">
+</p><h2 id="9f2f7f79-b47f-41b1-8077-188129b4d024" class=""><strong>Example de l’algorithme de BFS / DFS: </strong></h2><p id="46921ad2-0502-4602-aec6-527df2f4ec1c" class=""><div class="indented"><p id="1abc3b61-c431-471e-9266-8f0242a38be1" class="">pronouns par exemple le graph suivante: (graph simple  orienté pondéré)</p></div></p><pre id="1b0290f0-37c8-444e-bcb6-730ce51b250c" class="code"><code>A B 
+B C 
+B D 
+A D
+D E
+B E 
+C A</code></pre><p id="22a9335c-56a8-482b-a9df-99f8ccd3b6aa" class="">
+</p><figure id="3415e137-3877-4ecc-8c28-8af80afa7f3f" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2015.png"><img style="width:1021px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2015.png"/></a></figure><p id="05e0d8be-99db-4a65-b1b4-9b5018a2116d" class="">
+</p><p id="98740435-5ee4-471d-8ca0-5e3bc9f4d8e6" class=""><strong>Exemple BFS a partier de A</strong></p><figure id="d971e3ef-98c5-44eb-a948-04024a9de335" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2016.png"><img style="width:1021px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2016.png"/></a></figure><p id="55f65e5c-74c9-4866-9416-cc0654903cd4" class="">
+</p><p id="88afdf08-a419-4c01-b16e-d9646b4338fb" class=""><strong>Exemple BFS a partier de E</strong></p><figure id="6d893097-fb11-44fc-a9c4-1f14038c3925" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2017.png"><img style="width:1010px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2017.png"/></a></figure><p id="0a66b75a-3714-4660-83fa-d1b501634bcd" class="">
+</p><p id="55b1511e-0e2e-44e8-976e-772ea7c71965" class=""><strong>Exemple DFS a partier de D</strong></p><figure id="ea48501b-8bd8-4d1a-8868-f73517063a4c" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2018.png"><img style="width:1010px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2018.png"/></a></figure><p id="5695716b-ea41-40ae-a6b9-34630caf725d" class="">
+</p><p id="ca13c2c8-ecbc-4507-9903-c399216621d4" class=""><strong>Exemple DFS a partier de C</strong></p><figure id="9a4afd5f-86fe-46eb-a82f-2b1c6d3284c0" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2019.png"><img style="width:1010px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2019.png"/></a></figure><p id="724b3f7a-d7a8-499f-a56e-6b4bec29c47c" class="">
+</p><h2 id="ae0640be-40ae-431f-903f-a6bb3a8c2817" class=""><strong>Example de l’algorithme de prime: </strong></h2><p id="e78eda67-f68a-4595-91b1-89c833885bc1" class="">   pronouns par exemple le graph suivante: (graph simple  not orienté pondéré)</p><pre id="3c47415a-7238-46f7-a28d-56561c97019e" class="code"><code>
+6 1 10
+1 2 28
+2 3 16
+3 4 12
+4 5 22
+5 6 24
+4 7 18
+5 7 24
+7 2 14</code></pre><p id="2e4937b9-45c2-4466-8566-0e951cb886f0" class="">
+</p><figure id="8d853be7-498b-4d79-b0b6-1c052313c186" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2020.png"><img style="width:1007px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2020.png"/></a></figure><p id="07e6d483-a417-4105-a274-d53621b7bb26" class=""><strong>Explication: </strong>en arrière-plan, l’algorithme fait les prochaines étapes</p><figure id="a7747848-819b-468c-a75d-e5891f6f7ec3" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/prims-algorithm-java.png"><img style="width:600px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/prims-algorithm-java.png"/></a></figure><p id="aae3fcb9-03e8-46a7-a0f9-74d02d969803" class="">
+</p><h2 id="2e7034ab-6abe-43bc-9ba2-a5050247e1d1" class=""><strong>Example de l’algorithme de kosarajus: </strong></h2><figure id="fb913091-5897-44b5-8ee3-4d4f45cc6e48" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2021.png"><img style="width:1011px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2021.png"/></a></figure><p id="36ce504e-48f6-4d42-b9dc-abba76e987d9" class=""><strong>Explication:</strong></p><figure id="41e26562-9010-4ae9-a75b-06949c132616" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2022.png"><img style="width:754px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2022.png"/></a></figure><h2 id="462a45cc-663f-49a6-a739-e7b8a8e82f67" class=""><strong>Example de l’algorithme de </strong><em>bellman Ford:</em></h2><p id="3b46470b-c25b-410e-9d90-b38a2d370a47" class="">
+</p><p id="3ddcbb17-b015-455a-8fb5-37bf33f2654a" class=""><strong>Example :</strong></p><pre id="104c03de-19c0-48bb-b535-59573e3e8a37" class="code"><code>0 1 1
+0 2 4
+1 4 7
+1 3 2
+1 2 -2
+2 3 3
+3 4 4
+4 5 7
+5 3 -3</code></pre><p id="498d0651-e15e-4e5e-94ee-ebeaa6a07d56" class=""><em>source=0</em></p><figure id="6db278e4-4053-4e99-ad8f-3daf7dae24ce" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2023.png"><img style="width:1000px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2023.png"/></a></figure><p id="2de3a2e4-a70d-4171-a0fb-02139492f88c" class=""><strong>Explication:</strong></p><figure id="431147fd-1921-4721-9c70-98f3320cfe2e" class="image"><a href="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2024.png"><img style="width:456px" src="Theorie%20des%20graphes%20bfce2479b0114de48305c901e2c6ef4b/Untitled%2024.png"/></a></figure><p id="489b8914-01e5-457c-8014-0b6ba725a84e" class="">
+</p></div></article></body></html>
