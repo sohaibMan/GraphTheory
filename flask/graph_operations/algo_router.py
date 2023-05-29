@@ -4,6 +4,8 @@ from algorithms.bellman_ford_path import single_source_bellman_ford
 from algorithms.breadth_first_search import bfs_edges
 from algorithms.depth_first_search import dfs_edges
 from algorithms.dijkstra import dijkstra_path
+from algorithms.floyd_warshall import floyd_warshall
+from algorithms.kosaraju_strongly_connected_components import kosaraju_strongly_connected_components
 
 
 # from algorithms.dijkstra import dijkstra_path
@@ -39,10 +41,9 @@ def algo_router(graph, algo, body):
             return graph
 
         case "floydWarshall":
-            out_put = list(nx.floyd_warshall(graph, weight="weight"))
-        #     todo find a way to return the path as a graph
+            out_put = list(floyd_warshall(graph, weight="weight"))
         case "kosaraju":
-            out_put = list(nx.kosaraju_strongly_connected_components(graph))
+            out_put = list(kosaraju_strongly_connected_components(graph))
             graph_copy = graph.copy()
             graph.clear()
 
