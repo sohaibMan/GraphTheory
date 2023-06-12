@@ -1,31 +1,21 @@
 import networkx as nx
 
-from algorithms.bellman_ford_path import single_source_bellman_ford
-from algorithms.breadth_first_search import bfs_edges
-from algorithms.depth_first_search import dfs_edges
-from algorithms.dijkstra import dijkstra_path
-
-
-# from algorithms.dijkstra import dijkstra_path
-# from algorithms.kosaraju_strongly_connected_components import kosaraju_strongly_connected_components
-
 
 def algo_router(graph, algo, body):
-    out_put = None
     match algo:
         case "bfs":
-            out_put = list(bfs_edges(graph, body["start"]))
+            out_put = list(nx.bfs_edges(graph, body["start"]))
         case "dfs":
-            out_put = list(dfs_edges(graph, body["start"]))
+            out_put = list(nx.dfs_edges(graph, body["start"]))
         case "dijkstra":
             try:
-                path = dijkstra_path(graph, body["start"], body["target"], weight="weight")
+                path = nx.dijkstra_path(graph, body["start"], body["target"], weight="weight")
                 out_put = list(zip(path, path[1:]))
             except nx.NetworkXNoPath:
                 # No path to {target} from {start}
                 out_put = []
         case "bellmanFord":
-            _, path = single_source_bellman_ford(graph, body["start"], weight="weight")
+            _, path = nx.single_source_bellman_ford(graph, body["start"], weight="weight")
             edges = set()
             for p in path:
                 if len(path[p]) > 1:
@@ -40,7 +30,6 @@ def algo_router(graph, algo, body):
 
         case "floydWarshall":
             out_put = list(nx.floyd_warshall(graph, weight="weight"))
-        #     todo find a way to return the path as a graph
         case "kosaraju":
             out_put = list(nx.kosaraju_strongly_connected_components(graph))
             graph_copy = graph.copy()

@@ -20,6 +20,8 @@ app = Flask(__name__)
 shutil.rmtree("tmp_output")
 os.mkdir("tmp_output")
 
+FLASK_SERVER_PORT = os.environ.get("FLASK_SERVER_PORT", 9091)
+
 
 @app.after_request  # allow CORS for my React app
 def after_request(response):
@@ -79,12 +81,13 @@ def create_graph():
     # close the figure
     plt.close(fig)
     # return the response
+
     return {
         "status": "success",
         "graphId": filename,
-        "graphUrl": "http://localhost:5000/api/graph?graphId=" + filename,
+        "graphUrl": f"http://localhost:{FLASK_SERVER_PORT}/api/graph?graphId=" + filename,
     }
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=os.environ.get("FLASK_SERVER_PORT", 9091), debug=True)
+    app.run(host="0.0.0.0", port=FLASK_SERVER_PORT, debug=True)
