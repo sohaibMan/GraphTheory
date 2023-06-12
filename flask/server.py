@@ -20,12 +20,13 @@ app = Flask(__name__)
 shutil.rmtree("tmp_output")
 os.mkdir("tmp_output")
 
-FLASK_SERVER_PORT = os.environ.get("FLASK_SERVER_PORT", 9091)
+FLASK_SERVER_PORT = os.environ.get("FLASK_SERVER_PORT", 80)
+CLIENT_URL = os.environ.get("CLIENT_URL", "http://localhost:3000")
 
 
 @app.after_request  # allow CORS for my React app
 def after_request(response):
-    response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+    response.headers.add("Access-Control-Allow-Origin", CLIENT_URL)
     response.headers.add("Access-Control-Allow-Headers", "Content-Type")
     response.headers.add("Access-Control-Allow-Methods", "GET,POST")
     return response
