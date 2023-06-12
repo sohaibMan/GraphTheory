@@ -26,7 +26,7 @@ export default function Home() {
             queryKey: ["graph"],
             queryFn: () =>
                 fetch(
-                    `http://${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_PORT}/api/graph?graphType=${graphState.graphType}`,
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/graph?graphType=${graphState.graphType}`,
                     makeRequestOptions(graphState.nodes, graphState.edges)
                 )
                     .then((response) => response.json())
@@ -45,7 +45,7 @@ export default function Home() {
         {
             mutationFn: (variables: { graphType: string, algo: SupportedAlgo, start: string, target?: string }) =>
                 fetch(
-                    `http://${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_PORT}/api/graph?graphType=${variables.graphType}&algo=${variables.algo}`,
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/graph?graphType=${variables.graphType}&algo=${variables.algo}`,
                     makeAlgoRequestOptions(variables.start, graphState.nodes, graphState.edges, variables.target)
                 )
                     .then((response) => response.json())
