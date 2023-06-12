@@ -32,7 +32,6 @@ def algo_router(graph, algo, body):
             out_put = list(nx.floyd_warshall(graph, weight="weight"))
         case "kosaraju":
             out_put = list(nx.kosaraju_strongly_connected_components(graph))
-            graph_copy = graph.copy()
             graph.clear()
 
             # Add edges between the nodes in the SCC
