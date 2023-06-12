@@ -8,7 +8,7 @@ import CircularIndeterminate from "@/components/CircularIndeterminate";
 import Image from "next/image";
 import {SupportedAlgo} from "@/types/graphTypes";
 import {defaultGraphValues, isWeighted, makeAlgoRequestOptions, makeRequestOptions} from "@/helpers/helpers";
-import {TextArea} from "@/pages/components/textArea";
+import {TextArea} from "@/components/textArea";
 
 
 export default function Home() {
